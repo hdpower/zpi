@@ -135,7 +135,7 @@ public void initializeMainMenu()
     JMenu createProjectMenu=new JMenu("Stwórz projekt");
     JMenuItem createDBDiagram=new JMenuItem("Stwórz diagram tabel bazy danych");
     createDBDiagram.addActionListener(createDBDiagramClick);
-    JMenuItem createClassDiagram=new JMenuItem("Stwórz doagram klas");
+    JMenuItem createClassDiagram=new JMenuItem("Stwórz diagram klas");
     createClassDiagram.addActionListener(createClassDiagramClick);
     JMenuItem createCasesDiagram=new JMenuItem("Stwórz diagram przypadków");
     createCasesDiagram.addActionListener(createCasesDiagramClick);
