@@ -1,6 +1,8 @@
 package casetool;
 
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -42,6 +44,13 @@ public class ClassDiagram extends Diagram
         if(selectedNode.toString().equals("Klasa")) {
             
             JMenuItem addClass = new JMenuItem("Dodaj klasę");
+            addClass.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    classProperties dialogWindow=new classProperties(getInstance());
+                    dialogWindow.showWindow();
+                }
+            });
             contextMenu.add(addClass);
             
         }
