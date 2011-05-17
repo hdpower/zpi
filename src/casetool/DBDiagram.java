@@ -249,17 +249,21 @@ class Table extends Element
         int height=getHeight();
         if(visible)
         {
-        ct.setColor(Color.white);
-        ct.fillRect(x, y, width, height);
-        ct.setColor(color);
+        ct.setColor(Color.WHITE);
+        Color d = new Color(color.getRed() ,color.getGreen() , color.getBlue(), 60);
+        ct.fillRect(x, fontSize+margin*2, width, height);
+        ct.setColor(Color.BLACK);
         for(int i=0;i<fields.size();i++)
         {
             label=fields.get(i).getName()+" : "+fields.get(i).getType();
             ct.drawString(label, x+margin, y+(2*fontSize)+(3*margin)+((fontSize+margin)*i));
         }
+        ct.setColor(d);
+        ct.fillRect(x, y, width,fontSize+margin*2 );
+        
         ct.drawRect(x, y, width, height);
+        ct.setColor(Color.BLACK);
         ct.drawString(name,x+margin,y+margin+fontSize);
-        ct.drawLine(x, y+fontSize+(2*margin), width+x, y+fontSize+(2*margin));
         }
     }
     
