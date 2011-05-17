@@ -18,6 +18,6 @@ public class interfaceProperties extends JDialog {
     }
     
     public void showWindow() {
-        JOptionPane.showMessageDialog(null, "Udało się!", "Nowa klasa", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, "Udało się!", "Nowy interfejs", JOptionPane.INFORMATION_MESSAGE);
     }
 }

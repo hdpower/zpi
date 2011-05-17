@@ -53,6 +53,17 @@ public class ClassDiagram extends Diagram
             });
             contextMenu.add(addClass);
             
+        } else if(selectedNode.toString().equals("Interfejs")) {
+            
+            JMenuItem addInterface = new JMenuItem("Dodaj interfejs");
+            addInterface.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    interfaceProperties dialogWindow = new interfaceProperties(getInstance());
+                    dialogWindow.showWindow();
+                }
+            });
+            contextMenu.add(addInterface);
         }
     }
     
