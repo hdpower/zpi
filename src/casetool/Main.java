@@ -19,27 +19,27 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+//------------------------------------------------------------------------------ klasa startowa aplikacji ---------------------
 public class Main {
 
-
     public static void main(String[] args) {
-    MainWindow okno=new MainWindow();
+        MainWindow okno = new MainWindow();
     }
 
 }
 
-class MainWindow extends JFrame
-{
-private Integer szerokoscPM=new Integer(160);
-private Integer szerokoscEkranu=1280;
-private Integer wysokoscEkranu=720;
-private JMenuBar mainMenu;
-private JTabbedPane zakladki=new JTabbedPane();
-private ArrayList<Diagram> diagramy=new ArrayList<Diagram>();
-private DefaultMutableTreeNode projectManagerElements;
-private JTree projectManager;
-private JPopupMenu contextMenuTree;
-private JPopupMenu contextMenu;
+class MainWindow extends JFrame {
+    
+    private Integer szerokoscPM=new Integer(160);
+    private Integer szerokoscEkranu=1280;
+    private Integer wysokoscEkranu=720;
+    private JMenuBar mainMenu;
+    private JTabbedPane zakladki=new JTabbedPane();
+    private ArrayList<Diagram> diagramy=new ArrayList<Diagram>();
+    private DefaultMutableTreeNode projectManagerElements;
+    private JTree projectManager;
+    private JPopupMenu contextMenuTree;
+    private JPopupMenu contextMenu;
 
 public MainWindow()
     {
