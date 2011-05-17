@@ -223,17 +223,20 @@ public void initializeDiagramPM(Diagram diagram)
     panel.add(projectManager);
     }
 
-public void initializeCaseDiagramMenu()
-    {
-    JMenu menuElementy=mainMenu.getMenu(1);
-    menuElementy.setVisible(true);
-    JMenuItem addActor=new JMenuItem("Dodaj aktora");
-    JMenuItem addArea=new JMenuItem("Dodaj obszar");
-    JMenuItem addCase=new JMenuItem("Dodaj przypadek");
-    menuElementy.removeAll();
-    menuElementy.add(addActor);
-    menuElementy.add(addCase);
-    menuElementy.add(addArea);
+    //-------------------------------------------------------------------------- inicjuj menu Elementy
+    public void initializeCaseDiagramMenu() {
+        
+        JMenu menuElementy = mainMenu.getMenu(1);
+        
+        menuElementy.setVisible(true);               
+        menuElementy.removeAll();
+        
+        menuElementy.add(new JMenuItem("Aktor"));
+        menuElementy.add(new JMenuItem("Przypadek Użycia"));
+        menuElementy.add(new JMenuItem("Związek Prosty"));
+        menuElementy.add(new JMenuItem("Związek \"Include\""));
+        menuElementy.add(new JMenuItem("Związek \"Extends\""));
+        menuElementy.add(new JMenuItem("Podsystem"));
     }
 
 public void initializeClassMenu()
