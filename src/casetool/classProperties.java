@@ -317,14 +317,14 @@ public class classProperties extends JDialog {
                 Object column[] = {"Metoda " + lp, "int", "private", true};
                 classMethodsContainerModel.addRow(column);
                 
-                JTextArea nowa = new JTextArea("Metoda " + lp);
+                JTextArea nowa = new JTextArea("Parametr 1 [Metody " + lp + "]");
                 metodParameters.put(lp, nowa);
                 //System.out.print(classMethodsContainerModel.getValueAt(0, 3));
                 parametersCardLayoutPanel.add(metodParameters.get(lp), String.valueOf(lp));            
                 
                 CardLayout cl = (CardLayout)parametersCardLayoutPanel.getLayout();
                 cl.show(parametersCardLayoutPanel, String.valueOf(lp));
-                System.out.println("Dodałej JTextArea nr: " + lp);
+                //System.out.println("Dodałej JTextArea nr: " + lp);
             }
         });
         
@@ -332,17 +332,15 @@ public class classProperties extends JDialog {
         deleteRowContainerModelMethods.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                int selectedRows[] = classMethodsContainer.getSelectedRows();
+                int selectedRows = classMethodsContainer.getRowCount()-1;
                 
-                if(selectedRows.length > 0) {
-                    for(int i = selectedRows.length-1; i >= 0; i--) {
-                        classMethodsContainerModel.removeRow(selectedRows[i]);
-                        int lp = selectedRows[i]+1;
-                        CardLayout cl = (CardLayout)parametersCardLayoutPanel.getLayout();
-                        cl.removeLayoutComponent(metodParameters.get(lp));
-                        cl.show(parametersCardLayoutPanel, String.valueOf(lp-1));
-                        System.out.println("Usunąłem JTextArea nr: " + lp);
-                    }                    
+                if(selectedRows >= 0) {
+                    classMethodsContainerModel.removeRow(selectedRows);
+                    int lp = selectedRows+1;
+                    CardLayout cl = (CardLayout)parametersCardLayoutPanel.getLayout();
+                    cl.removeLayoutComponent(metodParameters.get(lp));
+                    cl.show(parametersCardLayoutPanel, String.valueOf(lp-1));
+                    //System.out.println("Usunąłem JTextArea nr: " + lp);                   
                 }
             }
         });
@@ -369,7 +367,7 @@ public class classProperties extends JDialog {
                 int lp = classMethodsContainer.getSelectedRow() + 1;
                 CardLayout cl = (CardLayout)parametersCardLayoutPanel.getLayout();
                 cl.show(parametersCardLayoutPanel, String.valueOf(lp));
-                System.out.println("Zaznaczyłem wiersz :" + classMethodsContainer.getSelectedRow());
+                //System.out.println("Zaznaczyłem wiersz :" + classMethodsContainer.getSelectedRow());
             }
         });
         
