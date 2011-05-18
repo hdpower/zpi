@@ -309,6 +309,25 @@ public class classProperties extends JDialog {
             }
         });
         
+        JButton cloneRowContainerModelAtributes = new JButton("Duplikuj");
+        cloneRowContainerModelAtributes.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {                
+                
+                if(classContainer.getSelectedRow() >= 0) {
+                    
+                    Object kopiaWiersza[] = new Object[5];
+                    
+                    for(int i=0; i < 5; i++) {
+
+                        kopiaWiersza[i] = classContainer.getValueAt(classContainer.getSelectedRow(), i);
+                    }
+
+                    classContainerModel.addRow(kopiaWiersza);
+                }
+            }
+        });
+        
         JButton addRowContainerModelMethods = new JButton("Dodaj wiersz");
         addRowContainerModelMethods.addActionListener(new ActionListener() {
 
@@ -371,6 +390,35 @@ public class classProperties extends JDialog {
             }
         });
         
+        JButton cloneRowContainerModelMethods = new JButton("Duplikuj");
+        cloneRowContainerModelMethods.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if(classMethodsContainer.getSelectedRow() >= 0) {
+                    
+                    Object kopiaWiersza[] = new Object[4];
+                    
+                    for(int i=0; i < 4; i++) {
+
+                        kopiaWiersza[i] = classMethodsContainer.getValueAt(classMethodsContainer.getSelectedRow(), i);
+                    }
+                    
+                    int lp = classMethodsContainer.getRowCount() + 1;
+                    
+                    classMethodsContainerModel.addRow(kopiaWiersza);                                        
+
+                    JTextArea nowa = new JTextArea(metodParameters.get(lp-1).getText());
+                    metodParameters.put(lp, nowa);
+                    //System.out.print(classMethodsContainerModel.getValueAt(0, 3));
+                    parametersCardLayoutPanel.add(metodParameters.get(lp), String.valueOf(lp));            
+
+                    CardLayout cl = (CardLayout)parametersCardLayoutPanel.getLayout();
+                    cl.show(parametersCardLayoutPanel, String.valueOf(lp));
+                    //System.out.println("Dodałej JTextArea nr: " + lp);
+                }
+            }
+        });
+        
         classMainPanel = new JPanel();
         classMainPanel.setLayout(new FlowLayout());
         classMainPanel.setPreferredSize(new Dimension(600, 600));
@@ -414,9 +462,11 @@ public class classProperties extends JDialog {
         atributesButtonsPanel.add(addRowContainerModelAtributes);
         atributesButtonsPanel.add(deleteRowContainerModelAtributes);
         atributesButtonsPanel.add(addAtributesType);
+        atributesButtonsPanel.add(cloneRowContainerModelAtributes);
         addRowContainerModelAtributes.setPreferredSize(new Dimension(150, 30));
         deleteRowContainerModelAtributes.setPreferredSize(new Dimension(150, 30));
         addAtributesType.setPreferredSize(new Dimension(150, 30));
+        cloneRowContainerModelAtributes.setPreferredSize(new Dimension(150, 30));
         classAtributesPanel.add(atributesButtonsPanel);
         
         classTabbs.add("Atrybuty", classAtributesPanel); 
@@ -439,9 +489,11 @@ public class classProperties extends JDialog {
         methodsButtonPanel.add(addRowContainerModelMethods);
         methodsButtonPanel.add(deleteRowContainerModelMethods);
         methodsButtonPanel.add(addMethodsTypes);
+        methodsButtonPanel.add(cloneRowContainerModelMethods);
         addRowContainerModelMethods.setPreferredSize(new Dimension(150, 30));
         deleteRowContainerModelMethods.setPreferredSize(new Dimension(150, 30));
         addMethodsTypes.setPreferredSize(new Dimension(150, 30));
+        cloneRowContainerModelMethods.setPreferredSize(new Dimension(150, 30));
         classMethodsPanel.add(methodsButtonPanel);
         
         classTabbs.add("Metody", classMethodsPanel);        
