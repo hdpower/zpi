@@ -19,27 +19,27 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+//------------------------------------------------------------------------------ klasa startowa aplikacji ---------------------
 public class Main {
 
-
     public static void main(String[] args) {
-    MainWindow okno=new MainWindow();
+        MainWindow okno = new MainWindow();
     }
 
 }
 
-class MainWindow extends JFrame
-{
-private Integer szerokoscPM=new Integer(160);
-private Integer szerokoscEkranu=1280;
-private Integer wysokoscEkranu=720;
-private JMenuBar mainMenu;
-private JTabbedPane zakladki=new JTabbedPane();
-private ArrayList<Diagram> diagramy=new ArrayList<Diagram>();
-private DefaultMutableTreeNode projectManagerElements;
-private JTree projectManager;
-private JPopupMenu contextMenuTree;
-private JPopupMenu contextMenu;
+class MainWindow extends JFrame {
+    
+    private Integer szerokoscPM=new Integer(160);
+    private Integer szerokoscEkranu=1280;
+    private Integer wysokoscEkranu=720;
+    private JMenuBar mainMenu;
+    private JTabbedPane zakladki=new JTabbedPane();
+    private ArrayList<Diagram> diagramy=new ArrayList<Diagram>();
+    private DefaultMutableTreeNode projectManagerElements;
+    private JTree projectManager;
+    private JPopupMenu contextMenuTree;
+    private JPopupMenu contextMenu;
 
 public MainWindow()
     {
@@ -131,15 +131,20 @@ public void initializeMainMenu()
             initializeDiagramPM(temp);
             }
         };
-    JMenuItem createProject=new JMenuItem("Stwórz projekt");
+    JMenuItem createProject=new JMenuItem("Stwórz projekt");    
     JMenu createProjectMenu=new JMenu("Stwórz projekt");
     JMenuItem createDBDiagram=new JMenuItem("Stwórz diagram tabel bazy danych");
     createDBDiagram.addActionListener(createDBDiagramClick);
     JMenuItem createClassDiagram=new JMenuItem("Stwórz diagram klas");
     createClassDiagram.addActionListener(createClassDiagramClick);
+    
+    // podmenu z diagramem przypadków użycia
     JMenuItem createCasesDiagram=new JMenuItem("Stwórz diagram przypadków");
+    createCasesDiagram.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
+    
     createCasesDiagram.addActionListener(createCasesDiagramClick);
     createCasesDiagram.setIcon(null);
+    
     JMenuItem loadProject=new JMenuItem("Wczytaj projekt");
     JMenuItem saveProject=new JMenuItem("Zapisz projekt");
     JMenuItem CloseProject=new JMenuItem("Zamknij projekt");
@@ -223,17 +228,89 @@ public void initializeDiagramPM(Diagram diagram)
     panel.add(projectManager);
     }
 
-public void initializeCaseDiagramMenu()
-    {
-    JMenu menuElementy=mainMenu.getMenu(1);
-    menuElementy.setVisible(true);
-    JMenuItem addActor=new JMenuItem("Dodaj aktora");
-    JMenuItem addArea=new JMenuItem("Dodaj obszar");
-    JMenuItem addCase=new JMenuItem("Dodaj przypadek");
-    menuElementy.removeAll();
-    menuElementy.add(addActor);
-    menuElementy.add(addCase);
-    menuElementy.add(addArea);
+    //-------------------------------------------------------------------------- inicjuj menu Elementy
+    public void initializeCaseDiagramMenu() {
+        
+        // status: 100%
+        
+        // pobierz referencje do menu do zmiennej menuElementy
+        JMenu menuElementy = mainMenu.getMenu(1);
+        
+        // wyczyść i pokaż
+        menuElementy.setVisible(true);               
+        menuElementy.removeAll();
+        
+        // dodaj do menu wszystkie możliwe rodzaje elementów
+        JMenuItem mA = new JMenuItem("Aktor");
+        JMenuItem mB = new JMenuItem("Przypadek Użycia");
+        JMenuItem mC = new JMenuItem("Związek Prosty");
+        JMenuItem mD = new JMenuItem("Związek \"Include\"");
+        JMenuItem mE = new JMenuItem("Związek \"Extends\"");
+        JMenuItem mF = new JMenuItem("Obszar podsystemu");
+
+        // dodaj skróty klawiaturowe
+        mA.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_1, java.awt.event.InputEvent.CTRL_MASK));
+        mB.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_2, java.awt.event.InputEvent.CTRL_MASK));
+        mC.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_3, java.awt.event.InputEvent.CTRL_MASK));
+        mD.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_4, java.awt.event.InputEvent.CTRL_MASK));
+        mE.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_5, java.awt.event.InputEvent.CTRL_MASK));
+        mF.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_6, java.awt.event.InputEvent.CTRL_MASK));
+        
+        // obsługa zdarzeń kliknięcia na pozycje w menu
+        mA.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "testMenu", "testMenu", JOptionPane.ERROR_MESSAGE);
+            }
+            
+        });
+        
+        mB.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "testMenu", "testMenu", JOptionPane.ERROR_MESSAGE);
+            }
+            
+        });
+        
+        mC.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "testMenu", "testMenu", JOptionPane.ERROR_MESSAGE);
+            }
+            
+        });
+        
+        mD.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "testMenu", "testMenu", JOptionPane.ERROR_MESSAGE);
+            }
+            
+        });
+        
+        mE.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "testMenu", "testMenu", JOptionPane.ERROR_MESSAGE);
+            }
+            
+        });
+        
+        mF.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "testMenu", "testMenu", JOptionPane.ERROR_MESSAGE);
+            }
+            
+        });
+                
+        menuElementy.add(mA);
+        menuElementy.add(mB);
+        menuElementy.add(mC);
+        menuElementy.add(mD);
+        menuElementy.add(mE);
+        menuElementy.add(mF);
     }
 
 public void initializeClassMenu()
