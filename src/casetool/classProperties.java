@@ -39,6 +39,10 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -95,6 +99,8 @@ public class classProperties extends JDialog {
         classTabbs = new JTabbedPane();
         initializeClassContainer();
         initializeClassMethodsContainter();
+        metodParameters = new HashMap<Integer, JTextArea>();
+        parametersCardLayoutPanel.add(new JTextArea("Parametry metod..."), "0");
     }
     
     private class CheckBoxCellEditor extends AbstractCellEditor implements TableCellEditor {  
@@ -224,7 +230,6 @@ public class classProperties extends JDialog {
         classMethodsContainer.getColumnModel().getColumn(3).setCellRenderer(new CheckBoxRenderer());
         
         parametersCardLayoutPanel = new JPanel(new CardLayout());
-        parametersCardLayoutPanel.add(new JTextArea("Ble Ble"), "P1");
                 
         
 //        Object dane[] = {"1", "int", "private", true}; 
@@ -312,9 +317,14 @@ public class classProperties extends JDialog {
                 Object column[] = {"Metoda " + lp, "int", "private", true};
                 classMethodsContainerModel.addRow(column);
                 
-                JTextArea nowa = new JTextArea();
-                //metodParameters.put(classMethodsContainer.getRowCount(), nowa);
-                System.out.print(classMethodsContainerModel.getValueAt(0, 3));
+                JTextArea nowa = new JTextArea("Metoda " + lp);
+                metodParameters.put(lp, nowa);
+                //System.out.print(classMethodsContainerModel.getValueAt(0, 3));
+                parametersCardLayoutPanel.add(metodParameters.get(lp), String.valueOf(lp));            
+                
+                CardLayout cl = (CardLayout)parametersCardLayoutPanel.getLayout();
+                cl.show(parametersCardLayoutPanel, String.valueOf(lp));
+                System.out.println("Dodałej JTextArea nr: " + lp);
             }
         });
         
@@ -325,8 +335,14 @@ public class classProperties extends JDialog {
                 int selectedRows[] = classMethodsContainer.getSelectedRows();
                 
                 if(selectedRows.length > 0) {
-                    for(int i = selectedRows.length-1; i >= 0; i--)
+                    for(int i = selectedRows.length-1; i >= 0; i--) {
                         classMethodsContainerModel.removeRow(selectedRows[i]);
+                        int lp = selectedRows[i]+1;
+                        CardLayout cl = (CardLayout)parametersCardLayoutPanel.getLayout();
+                        cl.removeLayoutComponent(metodParameters.get(lp));
+                        cl.show(parametersCardLayoutPanel, String.valueOf(lp-1));
+                        System.out.println("Usunąłem JTextArea nr: " + lp);
+                    }                    
                 }
             }
         });
@@ -344,6 +360,16 @@ public class classProperties extends JDialog {
                     classMethodsTypesComboBox.addItem(nowyTyp);
                     classMethodsTypesComboBox.repaint();
                 }
+            }
+        });
+        
+        classMethodsContainer.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+            public void valueChanged(ListSelectionEvent e) {
+                int lp = classMethodsContainer.getSelectedRow() + 1;
+                CardLayout cl = (CardLayout)parametersCardLayoutPanel.getLayout();
+                cl.show(parametersCardLayoutPanel, String.valueOf(lp));
+                System.out.println("Zaznaczyłem wiersz :" + classMethodsContainer.getSelectedRow());
             }
         });
         
