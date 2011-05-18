@@ -1,0 +1,64 @@
+Do CheckBox'a    
+
+private class CheckBoxCellEditor extends AbstractCellEditor implements TableCellEditor {  
+        
+        private CheckBoxRenderer renderer;
+          
+        public CheckBoxCellEditor() {  
+            renderer = new CheckBoxRenderer();
+        }  
+          
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,  int row, int column) {  
+   
+            return renderer.getTableCellRendererComponent(table, value, isSelected, row, column); 
+        }
+        
+        public Object getCellEditorValue() {  
+            if(renderer.isSelected()) return true;
+            return false;  
+        }  
+        
+    }  
+      
+    private class CheckBoxRenderer extends JCheckBox implements TableCellRenderer {  
+
+        public CheckBoxRenderer() {  
+            super();    
+            setHorizontalAlignment(SwingConstants.CENTER);  
+        }  
+
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,  int row, int column) {  
+ 
+            if (isSelected)
+            {
+                    this.setBackground(classMethodsContainer.getSelectionBackground());
+                    this.setForeground(classMethodsContainer.getSelectionForeground());
+            }
+            else
+            {
+                    this.setBackground(classMethodsContainer.getBackground());
+                    this.setForeground(classMethodsContainer.getForeground());
+            } 
+            
+            setSelected((value != null && ((Boolean) value).booleanValue()));
+            return this;   
+        }
+
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            
+            if (isSelected)
+            {
+                    this.setBackground(classMethodsContainer.getSelectionBackground());
+                    this.setForeground(classMethodsContainer.getSelectionForeground());
+            }
+            else
+            {
+                    this.setBackground(classMethodsContainer.getBackground());
+                    this.setForeground(classMethodsContainer.getForeground());
+            } 
+            
+            setSelected((value != null && ((Boolean) value).booleanValue()));
+            return this; 
+        }
+    }
+
