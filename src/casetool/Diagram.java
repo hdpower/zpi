@@ -7,23 +7,47 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-public abstract class Diagram
-{
-    public JPanel panel=new JPanel();
+//------------------------------------------------------------------------------ abstrakcyjna klasa diagramu ------------------
+public abstract class Diagram {
+    
+    public JPanel panel = new JPanel();
 
-protected DefaultMutableTreeNode elementsTree=new DefaultMutableTreeNode("Elementy");
-protected String typ;
-protected String source;
+    protected DefaultMutableTreeNode elementsTree = new DefaultMutableTreeNode("Elementy");
+    protected String typ;
+    protected String source;
 
-abstract public void drawElements(Graphics g);
-abstract public void setContextMenuOptions(DefaultMutableTreeNode selectedNode, JPopupMenu contextMenu);
-public String getType() { return this.typ; }
-public DefaultMutableTreeNode getElementsTree() { return this.elementsTree; }
-public void setElementsTree(DefaultMutableTreeNode elementsTree) { this.elementsTree=elementsTree; };
-public JPanel getPanel() { return this.panel; }
-public Vector<Element> getMousableElements() { return null; }
+    abstract public void drawElements(Graphics g);
+    
+    abstract public void setContextMenuOptions(DefaultMutableTreeNode selectedNode, JPopupMenu contextMenu);
+    
+    
+    public String getType() { 
+        return this.typ;
+    }
+    
+    public DefaultMutableTreeNode getElementsTree() { 
+        return this.elementsTree;
+    }
+    
+    public void setElementsTree(DefaultMutableTreeNode elementsTree) {
+        this.elementsTree=elementsTree;
+    };
+    
+    public JPanel getPanel() {
+        return this.panel;
+    }
+    
+    public Vector<Element> getMousableElements() {
+        return null;
+    }
 }
 
+
+
+
+
+
+//------------------------------------------------------------------------------ abstrakcyjna klasa elementu diagramu ---------
 abstract class Element
 {
     protected Boolean visible=new Boolean(true);
