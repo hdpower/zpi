@@ -9,6 +9,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+/*
+ *  Główna klasa Diagramu Przypadków Użycia
+ * 
+ */
+
 //------------------------------------------------------------------------------ główna klasa diagramu przypadków użycia ------
 public class CaseDiagram extends Diagram {
     
@@ -176,7 +181,7 @@ public class CaseDiagram extends Diagram {
         
     }
     
-    //-------------------------------------------------------------------------- rysuje element
+    //-------------------------------------------------------------------------- rysuje wszystkie elementy diagramu
     public void drawElements(Graphics g) {
         
         // status: 

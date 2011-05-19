@@ -15,6 +15,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 
+
 public class DBDiagram extends Diagram
 {
     public Vector<Element> tables=new Vector<Element>();

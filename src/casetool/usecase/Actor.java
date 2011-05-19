@@ -1,13 +1,24 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package casetool.usecase;
 
-/**
- *
- * @author al
+import javax.swing.*;
+
+/*
+ *  Klasa opowiadająca za rysowanie i zachowanie elementu Actor
+ * 
  */
-public class Actor {
+
+//------------------------------------------------------------------------------ klasa aktora ---------------------------------
+public class Actor extends UseCaseElement {
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
 }
