@@ -5,6 +5,7 @@
  */
 package casetool;
 
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -16,7 +17,10 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.AbstractAction;
 import javax.swing.AbstractCellEditor;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -35,6 +39,11 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
@@ -71,6 +80,9 @@ public class classProperties extends JDialog {
     private JComboBox classMethodsTypesComboBox;
     private JPanel classMethodsPanel;
     private ArrayList<Object> atributesTypes = new ArrayList<Object>();
+    private JCheckBox check;
+    private HashMap<Integer, JTextArea> metodParameters;
+    private JPanel parametersCardLayoutPanel;
     
     public classProperties(ClassDiagram cd) {
         
@@ -87,6 +99,8 @@ public class classProperties extends JDialog {
         classTabbs = new JTabbedPane();
         initializeClassContainer();
         initializeClassMethodsContainter();
+        metodParameters = new HashMap<Integer, JTextArea>();
+        parametersCardLayoutPanel.add(new JTextArea("Parametry metod..."), "0");
     }
     
     private class CheckBoxCellEditor extends AbstractCellEditor implements TableCellEditor {  
@@ -106,10 +120,10 @@ public class classProperties extends JDialog {
             if(renderer.isSelected()) return true;
             return false;  
         }  
+        
     }  
       
     private class CheckBoxRenderer extends JCheckBox implements TableCellRenderer {  
-        Border border = new EmptyBorder(1,2,1,2);  
 
         public CheckBoxRenderer() {  
             super();    
@@ -128,7 +142,8 @@ public class classProperties extends JDialog {
                     this.setBackground(classMethodsContainer.getBackground());
                     this.setForeground(classMethodsContainer.getForeground());
             } 
-
+            
+            setSelected((value != null && ((Boolean) value).booleanValue()));
             return this;   
         }
 
@@ -144,10 +159,26 @@ public class classProperties extends JDialog {
                     this.setBackground(classMethodsContainer.getBackground());
                     this.setForeground(classMethodsContainer.getForeground());
             } 
-
+            
+            setSelected((value != null && ((Boolean) value).booleanValue()));
             return this; 
         }
     }
+    
+    Action action = new AbstractAction("CheckBox") {
+    
+        public void actionPerformed(ActionEvent evt) {
+
+            JCheckBox cb = (JCheckBox)evt.getSource();
+
+            boolean isSel = cb.isSelected();
+            if (isSel) {
+                System.out.println("true");
+            } else {
+                System.out.println("false");
+            }
+        }
+    };
     
     private void initializeClassColors() {
         
@@ -168,7 +199,7 @@ public class classProperties extends JDialog {
         Object columnNames[] = {"Nazwa atrybutu", "Typ", "Widoczność", "Liczebność", "Wartość początkowa"};
         Object atributesVisibility[] = {"private", "protected", "public"};
         
-        classContainerModel = new DefaultTableModel(columnNames, 1);
+        classContainerModel = new DefaultTableModel(columnNames, 0);
         classContainer = new JTable(classContainerModel);        
         scrollPaneClassContainer = new JScrollPane(classContainer);
         scrollPaneClassContainer.setPreferredSize(new Dimension(600, 600));
@@ -184,18 +215,29 @@ public class classProperties extends JDialog {
         Object columnNames[] = {"Nazwa metody", "Typ zwracany", "Widoczność", "Polimorficzna"};
         Object atributesVisibility[] = {"private", "protected", "public"};
         
-        classMethodsContainerModel = new DefaultTableModel(columnNames, 1);
+        classMethodsContainerModel = new DefaultTableModel(columnNames, 0);
         classMethodsContainer = new JTable(classMethodsContainerModel);
         scrollPanelMethodsContainer = new JScrollPane(classMethodsContainer);
-        scrollPanelMethodsContainer.setPreferredSize(new Dimension(600, 600));
+        scrollPanelMethodsContainer.setPreferredSize(new Dimension(600, 450));
         classMethodsContainer.getTableHeader().setReorderingAllowed(false);
         
         JComboBox classMethodsVisibility = new JComboBox(atributesVisibility);
         
         classMethodsContainer.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(classMethodsTypesComboBox));
         classMethodsContainer.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(classMethodsVisibility));
+        check = new JCheckBox(action);
         classMethodsContainer.getColumnModel().getColumn(3).setCellEditor(new CheckBoxCellEditor());
         classMethodsContainer.getColumnModel().getColumn(3).setCellRenderer(new CheckBoxRenderer());
+        
+        parametersCardLayoutPanel = new JPanel(new CardLayout());
+                
+        
+//        Object dane[] = {"1", "int", "private", true}; 
+//        Object dane2[] = {"2", "int", "private", false}; 
+//        classMethodsContainerModel.addRow(dane);
+//        classMethodsContainerModel.addRow(dane2);
+//        System.out.print(classMethodsContainerModel.getValueAt(0, 3));
+        
     }
     
     private void initializeClassVisibility() {
@@ -232,7 +274,9 @@ public class classProperties extends JDialog {
         addRowContainerModelAtributes.addActionListener(new ActionListener() {
             
             public void actionPerformed(ActionEvent e) {
-                classContainerModel.addRow(new Object[5]);
+                int lp = classContainer.getRowCount() + 1;
+                Object column[] = {"Atrybut " + lp, "int", "private", "1..*", "null"};
+                classContainerModel.addRow(column);
             }
         });
         
@@ -265,11 +309,41 @@ public class classProperties extends JDialog {
             }
         });
         
+        JButton cloneRowContainerModelAtributes = new JButton("Duplikuj");
+        cloneRowContainerModelAtributes.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {                
+                
+                if(classContainer.getSelectedRow() >= 0) {
+                    
+                    Object kopiaWiersza[] = new Object[5];
+                    
+                    for(int i=0; i < 5; i++) {
+
+                        kopiaWiersza[i] = classContainer.getValueAt(classContainer.getSelectedRow(), i);
+                    }
+
+                    classContainerModel.addRow(kopiaWiersza);
+                }
+            }
+        });
+        
         JButton addRowContainerModelMethods = new JButton("Dodaj wiersz");
         addRowContainerModelMethods.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                classMethodsContainerModel.addRow(new Object[4]);
+                int lp = classMethodsContainer.getRowCount() + 1;
+                Object column[] = {"Metoda " + lp, "int", "private", true};
+                classMethodsContainerModel.addRow(column);
+                
+                JTextArea nowa = new JTextArea("Parametr 1 [Metody " + lp + "]");
+                metodParameters.put(lp, nowa);
+                //System.out.print(classMethodsContainerModel.getValueAt(0, 3));
+                parametersCardLayoutPanel.add(metodParameters.get(lp), String.valueOf(lp));            
+                
+                CardLayout cl = (CardLayout)parametersCardLayoutPanel.getLayout();
+                cl.show(parametersCardLayoutPanel, String.valueOf(lp));
+                //System.out.println("Dodałej JTextArea nr: " + lp);
             }
         });
         
@@ -277,11 +351,15 @@ public class classProperties extends JDialog {
         deleteRowContainerModelMethods.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                int selectedRows[] = classMethodsContainer.getSelectedRows();
+                int selectedRows = classMethodsContainer.getRowCount()-1;
                 
-                if(selectedRows.length > 0) {
-                    for(int i = selectedRows.length-1; i >= 0; i--)
-                        classMethodsContainerModel.removeRow(selectedRows[i]);
+                if(selectedRows >= 0) {
+                    classMethodsContainerModel.removeRow(selectedRows);
+                    int lp = selectedRows+1;
+                    CardLayout cl = (CardLayout)parametersCardLayoutPanel.getLayout();
+                    cl.removeLayoutComponent(metodParameters.get(lp));
+                    cl.show(parametersCardLayoutPanel, String.valueOf(lp-1));
+                    //System.out.println("Usunąłem JTextArea nr: " + lp);                   
                 }
             }
         });
@@ -298,6 +376,45 @@ public class classProperties extends JDialog {
                     
                     classMethodsTypesComboBox.addItem(nowyTyp);
                     classMethodsTypesComboBox.repaint();
+                }
+            }
+        });
+        
+        classMethodsContainer.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+            public void valueChanged(ListSelectionEvent e) {
+                int lp = classMethodsContainer.getSelectedRow() + 1;
+                CardLayout cl = (CardLayout)parametersCardLayoutPanel.getLayout();
+                cl.show(parametersCardLayoutPanel, String.valueOf(lp));
+                //System.out.println("Zaznaczyłem wiersz :" + classMethodsContainer.getSelectedRow());
+            }
+        });
+        
+        JButton cloneRowContainerModelMethods = new JButton("Duplikuj");
+        cloneRowContainerModelMethods.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if(classMethodsContainer.getSelectedRow() >= 0) {
+                    
+                    Object kopiaWiersza[] = new Object[4];
+                    
+                    for(int i=0; i < 4; i++) {
+
+                        kopiaWiersza[i] = classMethodsContainer.getValueAt(classMethodsContainer.getSelectedRow(), i);
+                    }
+                    
+                    int lp = classMethodsContainer.getRowCount() + 1;
+                    
+                    classMethodsContainerModel.addRow(kopiaWiersza);                                        
+
+                    JTextArea nowa = new JTextArea(metodParameters.get(lp-1).getText());
+                    metodParameters.put(lp, nowa);
+                    //System.out.print(classMethodsContainerModel.getValueAt(0, 3));
+                    parametersCardLayoutPanel.add(metodParameters.get(lp), String.valueOf(lp));            
+
+                    CardLayout cl = (CardLayout)parametersCardLayoutPanel.getLayout();
+                    cl.show(parametersCardLayoutPanel, String.valueOf(lp));
+                    //System.out.println("Dodałej JTextArea nr: " + lp);
                 }
             }
         });
@@ -345,9 +462,11 @@ public class classProperties extends JDialog {
         atributesButtonsPanel.add(addRowContainerModelAtributes);
         atributesButtonsPanel.add(deleteRowContainerModelAtributes);
         atributesButtonsPanel.add(addAtributesType);
+        atributesButtonsPanel.add(cloneRowContainerModelAtributes);
         addRowContainerModelAtributes.setPreferredSize(new Dimension(150, 30));
         deleteRowContainerModelAtributes.setPreferredSize(new Dimension(150, 30));
         addAtributesType.setPreferredSize(new Dimension(150, 30));
+        cloneRowContainerModelAtributes.setPreferredSize(new Dimension(150, 30));
         classAtributesPanel.add(atributesButtonsPanel);
         
         classTabbs.add("Atrybuty", classAtributesPanel); 
@@ -355,16 +474,26 @@ public class classProperties extends JDialog {
         //Tabs classMethods
         classMethodsPanel = new JPanel();
         classMethodsPanel.setLayout(new BoxLayout(classMethodsPanel, BoxLayout.X_AXIS));
-        classMethodsPanel.add(scrollPanelMethodsContainer);
+        JPanel metpar = new JPanel();
+        metpar.setLayout(new BoxLayout(metpar, BoxLayout.Y_AXIS));
+        metpar.add(scrollPanelMethodsContainer);
+        JLabel parametry = new JLabel("Parametry: ");
+        parametry.setAlignmentX(CENTER_ALIGNMENT);
+        parametry.setPreferredSize(new Dimension(100, 30));
+        metpar.add(parametry);
+        metpar.add(parametersCardLayoutPanel);
+        classMethodsPanel.add(metpar);
         JPanel methodsButtonPanel = new JPanel();
         methodsButtonPanel.setLayout(new FlowLayout());
         methodsButtonPanel.setPreferredSize(new Dimension(200, 600));
         methodsButtonPanel.add(addRowContainerModelMethods);
         methodsButtonPanel.add(deleteRowContainerModelMethods);
         methodsButtonPanel.add(addMethodsTypes);
+        methodsButtonPanel.add(cloneRowContainerModelMethods);
         addRowContainerModelMethods.setPreferredSize(new Dimension(150, 30));
         deleteRowContainerModelMethods.setPreferredSize(new Dimension(150, 30));
         addMethodsTypes.setPreferredSize(new Dimension(150, 30));
+        cloneRowContainerModelMethods.setPreferredSize(new Dimension(150, 30));
         classMethodsPanel.add(methodsButtonPanel);
         
         classTabbs.add("Metody", classMethodsPanel);        
