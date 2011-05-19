@@ -17,10 +17,18 @@ public class CaseDiagram extends Diagram {
     
     
     //-------------------------------------------------------------------------- konstruktor domyślny
-    public CaseDiagram() {
-        this.typ="Database";
-        elementsTree=new DefaultMutableTreeNode("Objekty");
+    public CaseDiagram() {     
         
+        // tworzenie menu w liście obiektów
+        this.typ = "CaseUse";
+        elementsTree = new DefaultMutableTreeNode("Dostępne obiekty:");
+
+        elementsTree.add(new DefaultMutableTreeNode("Aktor"));
+        elementsTree.add(new DefaultMutableTreeNode("Przypadek Użycia"));
+        elementsTree.add(new DefaultMutableTreeNode("Związek Prosty"));
+        elementsTree.add(new DefaultMutableTreeNode("Związek \"Include\""));
+        elementsTree.add(new DefaultMutableTreeNode("Związek \"Extends\""));
+        elementsTree.add(new DefaultMutableTreeNode("System"));
         
     }
 
@@ -50,19 +58,29 @@ public class CaseDiagram extends Diagram {
             addTable.addActionListener(addTableClick);
             contextMenu.add(addTable);
             
-        } else {
+        } if(selectedNode.toString().equals("Przypadek Użycia")) {
             
         }
+        
+        
+//                JMenuItem mA = new JMenuItem("Aktor");
+//        JMenuItem mB = new JMenuItem("Przypadek Użycia");
+//        JMenuItem mC = new JMenuItem("Związek Prosty");
+//        JMenuItem mD = new JMenuItem("Związek \"Include\"");
+//        JMenuItem mE = new JMenuItem("Związek \"Extends\"");
+//        JMenuItem mF = new JMenuItem("Obszar podsystemu");
+        
     }
 
-    // rysuje element
+    //-------------------------------------------------------------------------- rysuje element
     public void drawElements(Graphics g) {
         
         g.drawRect(100, 100, 200, 200);
         g.drawString("jest nieźle", 300, 300);        
 
     }
-     
+    
+    //-------------------------------------------------------------------------- 
     public void setPosition(Vector<Element> tables, int index, int canvasWidth, int canvasHeight) {
     
         
@@ -70,6 +88,7 @@ public class CaseDiagram extends Diagram {
     
     }
     
+    //-------------------------------------------------------------------------- modyfikuj element
     public void modifyElement(Diagram diagram, Element element) {
     
         
@@ -78,6 +97,7 @@ public class CaseDiagram extends Diagram {
         
     }
     
+    //-------------------------------------------------------------------------- usuń element
     public void deleteElement(Diagram diagram, Element element) {
     
         
