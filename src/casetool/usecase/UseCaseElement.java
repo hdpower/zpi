@@ -1,13 +1,23 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package casetool.usecase;
 
-/**
- *
- * @author al
+import casetool.Element;
+import javax.swing.*;
+
+/*
+ *  klasa abstrakcyjna która przechowuje wspólne pola i zachowania dla
+ *  elementów aktora i przypadku uzycia
+ * 
  */
+
+//------------------------------------------------------------------------------ klasa abstrakcyjna UseCaseElement ------------
 public class UseCaseElement {
+
+    
+    
+    
+    
+    
+    
     
 }

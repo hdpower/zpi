@@ -244,9 +244,10 @@ public void initializeDiagramPM(Diagram diagram)
         JMenuItem mA = new JMenuItem("Aktor");
         JMenuItem mB = new JMenuItem("Przypadek Użycia");
         JMenuItem mC = new JMenuItem("Związek Prosty");
-        JMenuItem mD = new JMenuItem("Związek \"Include\"");
-        JMenuItem mE = new JMenuItem("Związek \"Extends\"");
-        JMenuItem mF = new JMenuItem("Obszar podsystemu");
+        JMenuItem mD = new JMenuItem("Związek Dziedziczenia");
+        JMenuItem mE = new JMenuItem("Związek \"Include\"");
+        JMenuItem mF = new JMenuItem("Związek \"Extend\"");
+        JMenuItem mG = new JMenuItem("Obszar Podsystemu");
 
         // dodaj skróty klawiaturowe
         mA.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_1, java.awt.event.InputEvent.CTRL_MASK));
@@ -255,6 +256,7 @@ public void initializeDiagramPM(Diagram diagram)
         mD.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_4, java.awt.event.InputEvent.CTRL_MASK));
         mE.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_5, java.awt.event.InputEvent.CTRL_MASK));
         mF.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_6, java.awt.event.InputEvent.CTRL_MASK));
+        mG.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_6, java.awt.event.InputEvent.CTRL_MASK));
         
         // obsługa zdarzeń kliknięcia na pozycje w menu
         mA.addActionListener(new ActionListener() {
