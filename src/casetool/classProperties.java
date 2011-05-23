@@ -72,6 +72,7 @@ public class classProperties extends JDialog {
     private JCheckBox check;
     private HashMap<Integer, JTextArea> metodParameters;
     private JPanel parametersCardLayoutPanel;
+    private Class classData;
     
     public classProperties(ClassDiagram cd) {
         
@@ -90,6 +91,10 @@ public class classProperties extends JDialog {
         initializeClassMethodsContainter();
         metodParameters = new HashMap<Integer, JTextArea>();
         parametersCardLayoutPanel.add(new JTextArea("Parametry metod..."), "0");
+    }
+    
+    public void setClass(Class value) {
+        this.classData = value;
     }
     
     private class CheckBoxCellEditor extends AbstractCellEditor implements TableCellEditor {  
@@ -501,6 +506,19 @@ public class classProperties extends JDialog {
         JPanel mainButtonPanel = new JPanel();
         mainButtonPanel.add(buttonOK);
         mainButtonPanel.add(buttonAnuluj);
+        
+        buttonOK.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                
+                Class tempClass;
+                if(classData == null) tempClass = new Class(className.getText(), classColors.get(classColorsCombo.getSelectedItem()), classDocumentation.getText());
+                if(classData == null) classDiagram.classes.add(classData);
+                else classDiagram.classes.set(classDiagram.classes.indexOf(classData), classData);
+                classDiagram.refreshTables();
+                setVisible(false);
+            }
+        });
         
         buttonAnuluj.addActionListener(new ActionListener() {
 
