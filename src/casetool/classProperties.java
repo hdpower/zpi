@@ -11,16 +11,13 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractCellEditor;
 import javax.swing.Action;
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -30,26 +27,18 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
-import sun.swing.table.DefaultTableCellHeaderRenderer;
+
 
 /**
  *
@@ -351,7 +340,9 @@ public class classProperties extends JDialog {
         deleteRowContainerModelMethods.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                int selectedRows = classMethodsContainer.getRowCount()-1;
+                int selectedRows = classMethodsContainer.getRowCount()-1;               
+                
+                //classMethodsContainer.clearSelection();
                 
                 if(selectedRows >= 0) {
                     classMethodsContainerModel.removeRow(selectedRows);
@@ -386,7 +377,7 @@ public class classProperties extends JDialog {
                 int lp = classMethodsContainer.getSelectedRow() + 1;
                 CardLayout cl = (CardLayout)parametersCardLayoutPanel.getLayout();
                 cl.show(parametersCardLayoutPanel, String.valueOf(lp));
-                //System.out.println("Zaznaczyłem wiersz :" + classMethodsContainer.getSelectedRow());
+                //System.out.println("Zaznaczyłem wiersz :" + classMethodsContainer.getSelectedRow());               
             }
         });
         
