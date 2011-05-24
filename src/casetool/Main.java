@@ -38,7 +38,6 @@ import javax.swing.tree.TreePath;
  */
 
 
-
 //------------------------------------------------------------------------------ klasa startowa aplikacji ------------
 /* 
  *
@@ -61,31 +60,37 @@ public class Main {
 //------------------------------------------------------------------------------ klasa głównego okna aplikacji -------
 class MainWindow extends JFrame {
     
-    private Integer szerokoscPM=new Integer(180);
-    private Integer szerokoscEkranu=1280;
-    private Integer wysokoscEkranu=720;
+    //-------------------------------------------------------------------------- pola
     private JMenuBar mainMenu;
-    private JTabbedPane zakladki=new JTabbedPane();
-    private ArrayList<Diagram> diagramy=new ArrayList<Diagram>();
     private DefaultMutableTreeNode projectManagerElements;
     private JTree projectManager;
     private JPopupMenu contextMenuTree;
     private JPopupMenu contextMenu;
+    
+    private Integer szerokoscPM = new Integer(180);
+    private Integer szerokoscEkranu = 1280;
+    private Integer wysokoscEkranu = 720;
+    private JTabbedPane zakladki = new JTabbedPane();
+    private ArrayList<Diagram> diagramy = new ArrayList<Diagram>();
 
+    //-------------------------------------------------------------------------- konstruktor główny
     public MainWindow() {
         
-        Toolkit tools = Toolkit.getDefaultToolkit();
-        szerokoscEkranu = tools.getScreenSize().width;
-        wysokoscEkranu = tools.getScreenSize().height - 40;
+        // operacje ustawiające wielkość i inne właściwości okienka
+//        Toolkit tools = Toolkit.getDefaultToolkit();
+//        szerokoscEkranu = tools.getScreenSize().width;
+//        wysokoscEkranu = tools.getScreenSize().height - 40;
         mainMenu = new JMenuBar();
         Container content = getContentPane();
         
         content.add(zakladki);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(this.szerokoscEkranu, this.wysokoscEkranu);
-        setResizable(false);
+//        setResizable(false);
         setTitle("CaseTool 1.0");
     
+        // jeżeli wykryte zostanie zdarzenie przełączenia zkładki to
+        // załadowane zostanie odpowiednie menu i płutno
         ChangeListener changeTab = new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
@@ -115,7 +120,8 @@ class MainWindow extends JFrame {
         initializeMainMenu();
         setVisible(true);
     }
-
+    
+    //-------------------------------------------------------------------------- konfiguracja Menu głównego
     public void initializeMainMenu() {
         
         ActionListener createCasesDiagramClick = new ActionListener() {
@@ -162,27 +168,32 @@ class MainWindow extends JFrame {
             }
         };
         
-        JMenuItem createProject=new JMenuItem("Stwórz projekt");    
-        JMenu createProjectMenu=new JMenu("Stwórz projekt");
-        JMenuItem createDBDiagram=new JMenuItem("Stwórz diagram tabel bazy danych");
+        // ustaw elementy Menu głównego
+        JMenuItem createProject = new JMenuItem("Stwórz projekt");    
+        JMenu createProjectMenu = new JMenu("Stwórz projekt");
+        
+        // podmenu z diagramem baz danych
+        JMenuItem createDBDiagram = new JMenuItem("Stwórz diagram tabel bazy danych");
         createDBDiagram.addActionListener(createDBDiagramClick);
-        JMenuItem createClassDiagram=new JMenuItem("Stwórz diagram klas");
+        
+        // podmenu z diagramem klas
+        JMenuItem createClassDiagram = new JMenuItem("Stwórz diagram klas");
         createClassDiagram.addActionListener(createClassDiagramClick);
 
         // podmenu z diagramem przypadków użycia
-        JMenuItem createCasesDiagram=new JMenuItem("Stwórz diagram przypadków");
+        JMenuItem createCasesDiagram = new JMenuItem("Stwórz diagram przypadków");
         createCasesDiagram.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
-
         createCasesDiagram.addActionListener(createCasesDiagramClick);
         createCasesDiagram.setIcon(null);
+        
+        // reszta konfiguracj menu głównego
+        JMenuItem loadProject = new JMenuItem("Wczytaj projekt");
+        JMenuItem saveProject = new JMenuItem("Zapisz projekt");
+        JMenuItem CloseProject = new JMenuItem("Zamknij projekt");
+        JMenuItem CloseProgram = new JMenuItem("Zamknij program");
 
-        JMenuItem loadProject=new JMenuItem("Wczytaj projekt");
-        JMenuItem saveProject=new JMenuItem("Zapisz projekt");
-        JMenuItem CloseProject=new JMenuItem("Zamknij projekt");
-        JMenuItem CloseProgram=new JMenuItem("Zamknij program");
-
-        JMenu menuProjekt=new JMenu("Projekt");
-        JMenu menuElementy=new JMenu("Elementy");
+        JMenu menuProjekt = new JMenu("Projekt");
+        JMenu menuElementy = new JMenu("Elementy");
         menuElementy.setVisible(false);
         createProjectMenu.add(createCasesDiagram);
         createProjectMenu.add(createDBDiagram);
@@ -198,27 +209,37 @@ class MainWindow extends JFrame {
         mainMenu.add(menuElementy);
         //initializeCaseDiagramMenu();
     
-   }
-
-    public void setTabLayout(JPanel panel) {
-        panel.setLayout(null);
-        JPanel listaElementow=new JPanel();
-        listaElementow.setBounds(0,0,szerokoscPM,wysokoscEkranu);
-        Plotno tempCanvas =new Plotno();
-        tempCanvas.setBackground(Color.WHITE);
-        tempCanvas.setBounds(szerokoscPM,0,szerokoscEkranu-szerokoscPM,wysokoscEkranu);
-        panel.add(listaElementow);
-        panel.add(tempCanvas);
     }
 
+    //-------------------------------------------------------------------------- ustawienie drzewa elementów i plótna
+    public void setTabLayout(JPanel panel) {
+        
+        // ustaw panel z drzewem elementów wstawionych
+        panel.setLayout(null);        
+        JPanel listaElementow = new JPanel();
+        listaElementow.setBounds(0,0,szerokoscPM, wysokoscEkranu);
+        
+        // ustaw plótno do rozmieszczania elementow
+        Plotno tempCanvas = new Plotno();        
+        tempCanvas.setBackground(Color.WHITE);
+        tempCanvas.setBounds(szerokoscPM, 0, szerokoscEkranu-szerokoscPM, wysokoscEkranu);
+        panel.add(listaElementow);
+        panel.add(tempCanvas);
+        
+    }
+
+    //-------------------------------------------------------------------------- ustaw drzewo elementów dla diagramu
     public void initializeDiagramPM(Diagram diagram) {
         
         JPanel panel = (JPanel)diagram.panel.getComponent(0);
+        
         panel.setLayout(new FlowLayout());
+        
         projectManagerElements = diagram.getElementsTree();
         projectManager = new JTree(projectManagerElements);
         contextMenuTree = new JPopupMenu("Menu");
         
+        // MouseListener na drzewie elementów
         MouseListener contextMenuAction = new MouseListener() {
 
             public void mouseClicked(MouseEvent e) {
@@ -226,9 +247,10 @@ class MainWindow extends JFrame {
             }
 
             public void mousePressed(MouseEvent e) {
+                
+                // wyświetl menu jeżeli naciśniemy prawym przyciskiem
                 try {
-                    if(e.BUTTON3==e.getButton())
-                        {
+                    if(e.BUTTON3 == e.getButton()) {
                         TreePath selectedPath=(TreePath)projectManager.getPathForLocation(e.getX(), e.getY());
                         DefaultMutableTreeNode selectedNode=(DefaultMutableTreeNode)selectedPath.getLastPathComponent();
                         diagramy.get(zakladki.getSelectedIndex()).setContextMenuOptions(selectedNode, contextMenuTree);
@@ -236,7 +258,6 @@ class MainWindow extends JFrame {
                     }
                 }
                 catch(Exception ex) { }
-
             }
 
             public void mouseReleased(MouseEvent e) {
@@ -258,7 +279,7 @@ class MainWindow extends JFrame {
         panel.add(projectManager);
     }
 
-    //-------------------------------------------------------------------------- inicjuj menu Elementy
+    //-------------------------------------------------------------------------- inicjuj menu Elementy dla CaseDiagram
     public void initializeCaseDiagramMenu() {
         
         // status: 100%
@@ -346,10 +367,12 @@ class MainWindow extends JFrame {
         menuElementy.add(mF);
     }
 
+    //-------------------------------------------------------------------------- inicjuj menu Elementy dla ClassDiagram
     public void initializeClassMenu() {
         
         JMenu menuElementy = mainMenu.getMenu(1);
         menuElementy.setVisible(true);
+        
         JMenuItem addClass = new JMenuItem("Dodaj klasę");
         JMenuItem addInterface = new JMenuItem("Dodaj interfejs");
         JMenuItem addStaticClass = new JMenuItem("Dodaj klasę statyczną");
@@ -362,10 +385,12 @@ class MainWindow extends JFrame {
         menuElementy.add(addAbstractClass);
     }
 
+    //-------------------------------------------------------------------------- inicjuj menu Elementy dla DbDiagram
     public void initializeDBMenu() {
         
         JMenu menuElementy = mainMenu.getMenu(1);
         menuElementy.setVisible(true);
+        
         JMenuItem addTable = new JMenuItem("Dodaj tabelę");
         JMenuItem addView = new JMenuItem("Dodaj perspektywę");
         JMenuItem addFunction = new JMenuItem("Dodaj funkcję");
@@ -385,39 +410,33 @@ class MainWindow extends JFrame {
 //------------------------------------------------------------------------------ klasa kontenera do rysowania --------
 class Plotno extends JPanel {
     
-    private Boolean lock=new Boolean(true);
+    //-------------------------------------------------------------------------- pola
     private Diagram currentDiagram;
-    private int movedElement=-1;
-    private int currentElement=-1;
+    private Boolean lock = new Boolean(true);
+    private int movedElement = -1;
+    private int currentElement = -1;
     private  JPopupMenu contextMenu=new JPopupMenu();
              JMenuItem modifyElement=new JMenuItem("Modyfikuj element");
              JMenuItem deleteElement=new JMenuItem("Usuń element");
              JMenuItem setAutolocated=new JMenuItem("Ustaw pozycję automatycznie");
-
-    
-    public void setCurrentDiagram(Diagram currentDiagram) {
-        this.currentDiagram=currentDiagram;
-    }
-    
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        if(lock) currentDiagram.drawElements(g);
-    }
-
+   
+    //-------------------------------------------------------------------------- konstruktor główny         
     public Plotno() {
         
+        // dodaj trzy elementy do menu 
         contextMenu.add(modifyElement);
         contextMenu.add(deleteElement);
         contextMenu.add(setAutolocated);
         
+        // oraz dodaj zdarzenia kliknięcia dla nich
         modifyElement.addActionListener(new ActionListener() {
             
             public void actionPerformed(ActionEvent e) {
                 
+                // wyświetl okienko do modyfikacji elementu
                 Vector<Element> elements = currentDiagram.getMousableElements();
                 elements.get(currentElement).modifyElement(currentDiagram, elements.get(currentElement));
-                
+                System.out.println(" -> ok C");
             }
             
         });
@@ -425,7 +444,8 @@ class Plotno extends JPanel {
         deleteElement.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                
+                System.out.println(" -> ok D");
+                // usuń element
                 Vector<Element> elements = currentDiagram.getMousableElements();
                 
                 if(JOptionPane.showConfirmDialog(deleteElement, "Czy na pewno chcesz usunąć element "+elements.get(currentElement).toString()+" ?", TOOL_TIP_TEXT_KEY, 1)==0) {
@@ -439,65 +459,87 @@ class Plotno extends JPanel {
 
             public void actionPerformed(ActionEvent e) {
                 
+                // autorozmieść element na płótnie
                 Vector<Element> elements = currentDiagram.getMousableElements();
                 elements.get(currentElement).setAutolocated();
                 
             }
             
         });
-
+        
+        // listener MouseMotionListener płótna
         addMouseListener(new MouseListener() {
 
+            // kilknięcie na płótnie
             public void mouseClicked(MouseEvent e) {
                 //throw new UnsupportedOperationException("Not supported yet.");
             }
 
+            // naciśnięcie na płótnie
             public void mousePressed(MouseEvent e) {
-                
-                currentElement=-1;
+
+                currentElement = -1;
                 //if(contextMenu.isShowing()) context
                 
+                // pobierz wszystkie elementy które można przesówac z diagramu
                 Vector<Element> elements = currentDiagram.getMousableElements();
                 
+                // dla każdego elementu z tej listy...
                 for(int i = 0; i < elements.size(); i++) {
                     
+                    // sprawdź czy akurat nad tym elementym jest kursor myszy
                     if(elements.get(i).isMouseOverElement(e.getX(), e.getY())) {
-                       currentElement = i;
-                       
-                       if(e.getButton()==1) {
-                           movedElement=i;
-                       }
-                       
-                       if(e.getButton()==3) {
+                        
+                        // ustaw ten element jako aktywny
+                        currentElement = i;
+
+                        // jeżeli kliknięto lewym przyciskiem to ustawiamy ten element jako przesówany element
+                        if(e.getButton() == 1) {
+                           movedElement = i;
+                        }
+
+                        // jeżeli kliknięto prawym to wyświetl menu
+                        if(e.getButton() == 3) {
                            contextMenu.show(currentDiagram.panel, e.getX(), e.getY());
-                       }
-                       
-                       break;
+                        }
+                        
+                        // w danej chwili może być kilnięty jeden element tylko 
+                        // dlatego nie trzeba już dalej sprawdzać innych
+                        break;
                     }
                     
                 }
             }
 
+            // pusczenie przycisku myszy z płótna
             public void mouseReleased(MouseEvent e) {
-                if(movedElement>-1)
-                    movedElement=-1;
+                
+                // zresetuj przesówany element
+                if(movedElement > -1) {
+                    movedElement = -1;
+                }
+                
             }
 
+            // wejście myszy na płótno
             public void mouseEntered(MouseEvent e) {
                 //throw new UnsupportedOperationException("Not supported yet.");
             }
-
+            
+            // zejście myszy z płótna
             public void mouseExited(MouseEvent e) {
                 //throw new UnsupportedOperationException("Not supported yet.");
             }
         });
         
+        // listener MouseMotionListener płótna        
         addMouseMotionListener(new MouseMotionListener() {
 
             public void mouseDragged(MouseEvent e) {
+                
                 Vector<Element> elements = currentDiagram.getMousableElements();
                 
-                if(movedElement>-1) {
+                if(movedElement > -1) {
                     
                     elements.get(movedElement).setPosition(e.getX(), e.getY());
                     repaint();
@@ -506,7 +548,6 @@ class Plotno extends JPanel {
             }
 
             public void mouseMoved(MouseEvent e) {
-
                 
                 Vector<Element> elements=currentDiagram.getMousableElements();
 
@@ -523,5 +564,21 @@ class Plotno extends JPanel {
                 repaint();
             }
         });
+    }
+    
+    //-------------------------------------------------------------------------- ustaw domyślny diagram płótna
+    public void setCurrentDiagram(Diagram currentDiagram) {
+        this.currentDiagram = currentDiagram;
+    }
+    
+    //-------------------------------------------------------------------------- odśwież zawartość diagramu
+    @Override
+    public void paint(Graphics g) {
+        
+        super.paint(g);
+        
+        if(lock){
+            currentDiagram.drawElements(g);
+        }
     }
 }
