@@ -224,7 +224,7 @@ class Class extends Element {
     @Override
     public void deleteElement(Diagram diagram, Element element) {
         ClassDiagram diagramC = (ClassDiagram)diagram;
-        diagramC.classes.remove((Table)element);
+        diagramC.classes.remove((Class)element);
     }    
 }
 

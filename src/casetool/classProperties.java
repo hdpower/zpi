@@ -259,6 +259,9 @@ public class classProperties extends JDialog {
         JLabel labelClassName = new JLabel("Nazwa klasy: ");
         className = new JTextField();
         className.setPreferredSize(new Dimension(600, 30));
+        if(classData != null) {
+            className.setText(classData.toString());
+        }
         labelClassName.setPreferredSize(new Dimension(600, 30));
         
         JLabel labelClassColors = new JLabel("Kolor elementu UML na diagramie: ");
@@ -512,11 +515,12 @@ public class classProperties extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 
                 Class tempClass;
-                if(classData == null) tempClass = new Class(className.getText(), classColors.get(classColorsCombo.getSelectedItem()), classDocumentation.getText());
-                if(classData == null) classDiagram.classes.add(classData);
-                else classDiagram.classes.set(classDiagram.classes.indexOf(classData), classData);
-                classDiagram.refreshTables();
-                setVisible(false);
+                if(classData == null) tempClass = new Class(className.getText(), classColors.get(classColorsCombo.getSelectedItem().toString()), classDocumentation.getText());
+                else tempClass = new Class(className.getText(), classColors.get(classColorsCombo.getSelectedItem().toString()), classDocumentation.getText());
+                if(classData == null) classDiagram.classes.add(tempClass);
+                else classDiagram.classes.set(classDiagram.classes.indexOf(classData), tempClass);
+                //classDiagram.refreshTables();
+                dispose();
             }
         });
         
