@@ -1,4 +1,3 @@
-
 package casetool;
 
 import com.sun.org.apache.xerces.internal.impl.xs.opti.DefaultNode;
@@ -19,18 +18,26 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-//------------------------------------------------------------------------------ klasa startowa aplikacji ---------------------
+//------------------------------------------------------------------------------ klasa startowa aplikacji ------------
+/*
+ *      ta klasa jest zupełnie NIE POTRZEBNA!!!
+ * 
+ *      jaką rolę ona odgrywa w naszej aplikacji???????????????
+ */
 public class Main {
 
     public static void main(String[] args) {
+        
         MainWindow okno = new MainWindow();
+        
     }
 
 }
 
+//------------------------------------------------------------------------------ klasa głównego okna aplikacji -------
 class MainWindow extends JFrame {
     
-    private Integer szerokoscPM=new Integer(160);
+    private Integer szerokoscPM=new Integer(180);
     private Integer szerokoscEkranu=1280;
     private Integer wysokoscEkranu=720;
     private JMenuBar mainMenu;
@@ -262,7 +269,7 @@ public void initializeDiagramPM(Diagram diagram)
         mA.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "testMenu", "testMenu", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "testMenu", "testMenu 1", JOptionPane.ERROR_MESSAGE);
             }
             
         });
@@ -270,7 +277,7 @@ public void initializeDiagramPM(Diagram diagram)
         mB.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "testMenu", "testMenu", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "testMenu", "testMenu 2", JOptionPane.ERROR_MESSAGE);
             }
             
         });
@@ -278,7 +285,7 @@ public void initializeDiagramPM(Diagram diagram)
         mC.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "testMenu", "testMenu", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "testMenu", "testMenu 3", JOptionPane.ERROR_MESSAGE);
             }
             
         });
@@ -286,7 +293,7 @@ public void initializeDiagramPM(Diagram diagram)
         mD.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "testMenu", "testMenu", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "testMenu", "testMenu 4", JOptionPane.ERROR_MESSAGE);
             }
             
         });
@@ -294,7 +301,7 @@ public void initializeDiagramPM(Diagram diagram)
         mE.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "testMenu", "testMenu", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "testMenu", "testMenu 5", JOptionPane.ERROR_MESSAGE);
             }
             
         });
@@ -302,11 +309,12 @@ public void initializeDiagramPM(Diagram diagram)
         mF.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "testMenu", "testMenu", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "testMenu", "testMenu 6", JOptionPane.ERROR_MESSAGE);
             }
             
         });
                 
+        // dodaj elementy menu do głównego korzenia Menu
         menuElementy.add(mA);
         menuElementy.add(mB);
         menuElementy.add(mC);
@@ -348,6 +356,8 @@ public void initializeDBMenu()
     }
 }
 
+
+//------------------------------------------------------------------------------ klasa kontenera do rysowania --------
 class Plotno extends JPanel
 {
     private Boolean lock=new Boolean(true);
