@@ -77,16 +77,16 @@ class MainWindow extends JFrame {
     public MainWindow() {
         
         // operacje ustawiające wielkość i inne właściwości okienka
-//        Toolkit tools = Toolkit.getDefaultToolkit();
-//        szerokoscEkranu = tools.getScreenSize().width;
-//        wysokoscEkranu = tools.getScreenSize().height - 40;
+        Toolkit tools = Toolkit.getDefaultToolkit();
+        szerokoscEkranu = tools.getScreenSize().width;
+        wysokoscEkranu = tools.getScreenSize().height - 40;
         mainMenu = new JMenuBar();
         Container content = getContentPane();
         
         content.add(zakladki);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(this.szerokoscEkranu, this.wysokoscEkranu);
-//        setResizable(false);
+        setResizable(false);
         setTitle("CaseTool 1.0");
     
         // jeżeli wykryte zostanie zdarzenie przełączenia zkładki to
