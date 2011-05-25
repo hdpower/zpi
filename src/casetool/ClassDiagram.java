@@ -99,23 +99,28 @@ class Class extends Element {
     
     public Vector<ClassField> fields = new Vector<ClassField>();
     private String documentation;
+    private boolean isAbstract;
+    private boolean isStatic;
+    private String visibility;
+    
 
-    public Class(String name, Color color, String doc) {
+    public Class(String name, Color color) {
         
         this.name  = name;
         this.color = color;
-        this.documentation = doc;
     }
     
-    public void setDocumentation(String doc) 
-    {
-        this.documentation = doc;
-    }
+    public void setDocumentation(String doc) { this.documentation = doc; }  
+    public String getDocumentation() { return this.documentation; }
     
-    public String getDocumentation() 
-    {
-        return documentation;                
-    }
+    public void setAbstract(boolean abs) { this.isAbstract = abs; }
+    public boolean getAbstract() { return this.isAbstract; }
+    
+    public void setStatic(boolean sta) { this.isStatic = sta; }
+    public boolean getStatic() { return this.isStatic; }
+    
+    public void setVisibility(String v) { this.visibility = v; }
+    public String getVisibility() { return this.visibility; }
     
     @Override
     public Boolean isMouseOverElement(int mouseX, int mouseY) { 

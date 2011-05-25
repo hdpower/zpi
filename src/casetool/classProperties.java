@@ -92,7 +92,14 @@ public class classProperties extends JDialog {
         initializeClassMethodsContainter();
         metodParameters = new HashMap<Integer, JTextArea>();
         metodParameters2 = new HashMap<Integer, MethodsParameters>();
-        parametersCardLayoutPanel.add(new JTextArea("Parametry metod..."), "0");
+        
+        Object columnNames[] = {"Nazwa parametru", "Typ parametru", "Typ przekazywania"};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        JTable tabela = new JTable(model);
+        JScrollPane panelPoczat = new JScrollPane(tabela);
+        parametersCardLayoutPanel.add(panelPoczat, "0");
+        panelPoczat.setPreferredSize(new Dimension(600, 200));
+        tabela.getTableHeader().setReorderingAllowed(false);
     }
     
     public void setClass(Class value) {
@@ -195,6 +202,8 @@ public class classProperties extends JDialog {
         
         classColorsCombo = new JComboBox(classColors.keySet().toArray());
         classColorsCombo.setPreferredSize(new Dimension(600, 30));
+        //classColorsCombo.setSelectedIndex(2);
+        
     }
     
     private void initializeClassContainer() {
@@ -221,7 +230,7 @@ public class classProperties extends JDialog {
         classMethodsContainerModel = new DefaultTableModel(columnNames, 0);
         classMethodsContainer = new JTable(classMethodsContainerModel);
         scrollPanelMethodsContainer = new JScrollPane(classMethodsContainer);
-        scrollPanelMethodsContainer.setPreferredSize(new Dimension(600, 450));
+        scrollPanelMethodsContainer.setPreferredSize(new Dimension(600, 350));
         classMethodsContainer.getTableHeader().setReorderingAllowed(false);
         
         JComboBox classMethodsVisibility = new JComboBox(atributesVisibility);
@@ -267,14 +276,12 @@ public class classProperties extends JDialog {
         //Tabs classMain
         JLabel labelClassName = new JLabel("Nazwa klasy: ");
         className = new JTextField();
-        className.setPreferredSize(new Dimension(600, 30));
-        if(classData != null) {
-            className.setText(classData.toString());
-        }
+        className.setPreferredSize(new Dimension(600, 30));       
+        
         labelClassName.setPreferredSize(new Dimension(600, 30));
         
         JLabel labelClassColors = new JLabel("Kolor elementu UML na diagramie: ");
-        labelClassColors.setPreferredSize(new Dimension(600, 30));
+        labelClassColors.setPreferredSize(new Dimension(600, 30));       
         
         JButton addRowContainerModelAtributes = new JButton("Dodaj wiersz");
         addRowContainerModelAtributes.addActionListener(new ActionListener() {
@@ -345,15 +352,23 @@ public class classProperties extends JDialog {
                 JTextArea nowa = new JTextArea("Parametr 1 [Metody " + lp + "]");
 
                 Object columnNames[] = {"Nazwa parametru", "Typ parametru", "Typ przekazywania"};
-                Object atributesVisibility[] = {"private" + lp, "protected", "public"};
+                //Object atributesVisibility[] = {"private" + lp, "protected", "public"};
+                
+                Object trybPrzekazywania[] = {"* - wskaźnik", "& - referencja", "wartość"};
+                JComboBox typyZwracane = new JComboBox(atributesTypes.toArray());
+                JComboBox trybPrzekazywaniaJCB   = new JComboBox(trybPrzekazywania);     
                 
                 MethodsParameters parameters = new MethodsParameters();
                 parameters.modelParametrow = new DefaultTableModel(columnNames, 0);                
                 parameters.parametry = new JTable(parameters.modelParametrow);
                 parameters.panel = new JScrollPane(parameters.parametry);
                 parameters.parametry.getTableHeader().setReorderingAllowed(false);
-                parameters.modelParametrow.addRow(atributesVisibility);
-                parameters.panel.setPreferredSize(new Dimension(600, 100));
+                //parameters.modelParametrow.addRow(atributesVisibility);
+                parameters.panel.setPreferredSize(new Dimension(600, 200));
+                parameters.parametry.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(typyZwracane));
+                parameters.parametry.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(trybPrzekazywaniaJCB));
+                typyZwracane.setEditable(true);
+                trybPrzekazywaniaJCB.setEditable(true);
                 metodParameters2.put(lp, parameters);
                 
                 metodParameters.put(lp, nowa);
@@ -418,6 +433,8 @@ public class classProperties extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 if(classMethodsContainer.getSelectedRow() >= 0) {
                     
+                    classMethodsContainer.editCellAt(-1, -1);
+                    
                     Object kopiaWiersza[] = new Object[4];
                     
                     for(int i=0; i < 4; i++) {
@@ -435,23 +452,29 @@ public class classProperties extends JDialog {
 //                    parametersCardLayoutPanel.add(metodParameters.get(lp), String.valueOf(lp)); 
                     
                     Object columnNames[] = {"Nazwa parametru", "Typ parametru", "Typ przekazywania"};
+                    Object trybPrzekazywania[] = {"* - wskaźnik", "& - referencja", "wartość"};
+                    JComboBox typyZwracane = new JComboBox(atributesTypes.toArray());
+                    JComboBox trybPrzekazywaniaJCB   = new JComboBox(trybPrzekazywania);
 
                     MethodsParameters parameters = new MethodsParameters();
                     parameters.modelParametrow = new DefaultTableModel(columnNames, 0);                
                     parameters.parametry = new JTable(parameters.modelParametrow);
                     parameters.panel = new JScrollPane(parameters.parametry);
                     parameters.parametry.getTableHeader().setReorderingAllowed(false); 
-                    parameters.panel.setPreferredSize(new Dimension(600, 100));
+                    parameters.panel.setPreferredSize(new Dimension(600, 200));
+                    parameters.parametry.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(typyZwracane));
+                    parameters.parametry.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(trybPrzekazywaniaJCB));
+                    metodParameters2.get(classMethodsContainer.getSelectedRow()+1).parametry.editCellAt(-1, -1);
                     int iw = metodParameters2.get(classMethodsContainer.getSelectedRow()+1).modelParametrow.getRowCount();
-                    System.out.println("Liczba do skopiowania: " + iw);
+                    //System.out.println("Liczba do skopiowania: " + iw);
                     for(int i=0; i<iw; i++) {
                         Object wiersz[] = new Object[3];
                         wiersz[0] = metodParameters2.get(classMethodsContainer.getSelectedRow()+1).modelParametrow.getValueAt(i, 0);
                         wiersz[1] = metodParameters2.get(classMethodsContainer.getSelectedRow()+1).modelParametrow.getValueAt(i, 1);
                         wiersz[2] = metodParameters2.get(classMethodsContainer.getSelectedRow()+1).modelParametrow.getValueAt(i, 2);
-                        System.out.println(wiersz[0]);
-                        System.out.println(wiersz[1]);
-                        System.out.println(wiersz[2]);
+                        //System.out.println(wiersz[0]);
+                        //System.out.println(wiersz[1]);
+                        //System.out.println(wiersz[2]);
                         parameters.modelParametrow.addRow(wiersz);
                     }
                     metodParameters2.put(lp, parameters);   
@@ -463,6 +486,30 @@ public class classProperties extends JDialog {
                 }
             }
         });
+        
+        JButton addMethodParameters = new JButton("Dodaj parametr");
+        addMethodParameters.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if(classMethodsContainer.getSelectedRow() >= 0) {
+                    int iloscParametrow = metodParameters2.get(classMethodsContainer.getSelectedRow()+1).modelParametrow.getRowCount() + 1;
+                    int ktoraMetoda = classMethodsContainer.getSelectedRow() + 1;
+                    Object wiersz[] = {"Parametr " + iloscParametrow + " [Metody " + ktoraMetoda + "]" , "int", "wartość"};               
+                    metodParameters2.get(classMethodsContainer.getSelectedRow()+1).modelParametrow.addRow(wiersz);
+                }
+            }
+        });
+        
+        JButton deleteMethodParameters = new JButton("Usuń parametr");
+        deleteMethodParameters.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if(classMethodsContainer.getSelectedRow() >= 0) {          
+                    int usuwany = metodParameters2.get(classMethodsContainer.getSelectedRow()+1).modelParametrow.getRowCount()-1;
+                    if(usuwany >= 0) metodParameters2.get(classMethodsContainer.getSelectedRow()+1).modelParametrow.removeRow(usuwany);
+                }
+            }
+        });        
         
         classMainPanel = new JPanel();
         classMainPanel.setLayout(new FlowLayout());
@@ -535,10 +582,17 @@ public class classProperties extends JDialog {
         methodsButtonPanel.add(deleteRowContainerModelMethods);
         methodsButtonPanel.add(addMethodsTypes);
         methodsButtonPanel.add(cloneRowContainerModelMethods);
+        JPanel odstepButt = new JPanel();
+        methodsButtonPanel.add(odstepButt);
+        odstepButt.setPreferredSize(new Dimension(150, 230));
+        methodsButtonPanel.add(addMethodParameters);
+        methodsButtonPanel.add(deleteMethodParameters);
         addRowContainerModelMethods.setPreferredSize(new Dimension(150, 30));
         deleteRowContainerModelMethods.setPreferredSize(new Dimension(150, 30));
         addMethodsTypes.setPreferredSize(new Dimension(150, 30));
         cloneRowContainerModelMethods.setPreferredSize(new Dimension(150, 30));
+        addMethodParameters.setPreferredSize(new Dimension(150, 30));
+        deleteMethodParameters.setPreferredSize(new Dimension(150, 30));
         classMethodsPanel.add(methodsButtonPanel);
         
         classTabbs.add("Metody", classMethodsPanel);        
@@ -560,13 +614,27 @@ public class classProperties extends JDialog {
 
             public void actionPerformed(ActionEvent e) {
                 
-                Class tempClass;
-                if(classData == null) tempClass = new Class(className.getText(), classColors.get(classColorsCombo.getSelectedItem().toString()), classDocumentation.getText());
-                else tempClass = new Class(className.getText(), classColors.get(classColorsCombo.getSelectedItem().toString()), classDocumentation.getText());
-                if(classData == null) classDiagram.classes.add(tempClass);
-                else classDiagram.classes.set(classDiagram.classes.indexOf(classData), tempClass);
-                //classDiagram.refreshTables();
-                dispose();
+                boolean isCorrect = true;
+                
+                if(className.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Podaj nazwę klasy!", "BŁĄD!!!", JOptionPane.ERROR_MESSAGE);
+                    isCorrect = false;
+                }
+                
+                if(isCorrect) {
+                    Class tempClass;
+                    tempClass = new Class(className.getText(), classColors.get(classColorsCombo.getSelectedItem().toString()));
+                    tempClass.setAbstract(classAbstractCheckBox.isSelected());
+                    tempClass.setStatic(classStaticCheckBox.isSelected());
+                    tempClass.setDocumentation(classDocumentation.getText());
+                    tempClass.setVisibility(classVisibilityCombo.getSelectedItem().toString());
+
+                    if(classData == null) classDiagram.classes.add(tempClass);
+                    else classDiagram.classes.set(classDiagram.classes.indexOf(classData), tempClass);
+
+                    //classDiagram.refreshTables();
+                    dispose();
+                }
             }
         });
         
@@ -578,6 +646,47 @@ public class classProperties extends JDialog {
         });
         
         content.add(mainButtonPanel);
-        this.setVisible(true);
+        
+        /*
+         * Ustawienie wartości istniejących
+         */
+        
+        if(classData != null) {
+            
+            //Ustawienie nazwy klasy
+            className.setText(classData.toString());
+            //Ustawienie nazwy klasy
+            
+            //Ustawienie zaznaczonego koloru
+            int selectedColor = 0;
+            for(int i=0; i<classColorsCombo.getItemCount(); i++) {
+                //System.out.println(classData.color);
+                //System.out.println(classColors.get(classColorsCombo.getItemAt(i).toString()));
+                if(classData.color == classColors.get(classColorsCombo.getItemAt(i).toString())) {                   
+                    selectedColor = i;
+                }
+            }
+            classColorsCombo.setSelectedIndex(selectedColor);
+            //Ustawienie zaznaczonego koloru
+            
+            //Ustawienie widoczności klasy
+            int selectedVisibility = 0;
+            for(int i=0; i<classVisibilityCombo.getItemCount(); i++) {
+                if(classData.getVisibility().equals(classVisibilityCombo.getItemAt(i))) {
+                    selectedVisibility = i;
+                }
+            }
+            classVisibilityCombo.setSelectedIndex(selectedVisibility);
+            //Ustawienie widoczności klasy
+            
+            //Ustawienie dokumentacji klasy
+            classDocumentation.setText(classData.getDocumentation());
+            //Ustawienie dokumentacji klasy
+            
+            classAbstractCheckBox.setSelected(classData.getAbstract());
+            classStaticCheckBox.setSelected(classData.getStatic());
+        }
+        
+        this.setVisible(true);        
     }
 }
