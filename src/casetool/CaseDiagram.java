@@ -14,7 +14,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * 
  */
 
-//------------------------------------------------------------------------------ główna klasa diagramu przypadków użycia ------
+//------------------------------------------------------------------------------ główna klasa diagramu przypadków ----
 public class CaseDiagram extends Diagram {
     
     //-------------------------------------------------------------------------- pola
@@ -43,7 +43,8 @@ public class CaseDiagram extends Diagram {
     }
 
     //-------------------------------------------------------------------------- podmenu dla każdego dodanego elementu
-    public void setContextMenuOptions(DefaultMutableTreeNode selectedNode, JPopupMenu contextMenu) {
+    public void setContextMenuOptions(DefaultMutableTreeNode selectedNode, 
+                                      JPopupMenu contextMenu) {
         
         // status: 
         
