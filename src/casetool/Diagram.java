@@ -10,37 +10,46 @@ import javax.swing.tree.DefaultMutableTreeNode;
 //------------------------------------------------------------------------------ abstrakcyjna klasa diagramu ------------------
 public abstract class Diagram {
     
+    //-------------------------------------------------------------------------- metody abstrakcyjne
+    abstract public void drawElements(Graphics g);    
+    abstract public void setContextMenuOptions(DefaultMutableTreeNode selectedNode, JPopupMenu contextMenu);
+    
+    //-------------------------------------------------------------------------- pola
     public JPanel panel = new JPanel();
-
     protected DefaultMutableTreeNode elementsTree = new DefaultMutableTreeNode("Elementy");
     protected String typ;
     protected String source;
 
-    abstract public void drawElements(Graphics g);
+    //-------------------------------------------------------------------------- metody
     
-    abstract public void setContextMenuOptions(DefaultMutableTreeNode selectedNode, JPopupMenu contextMenu);
-    
-    
-    public String getType() { 
+    public String getType() {                                                   // pobierz typ
         return this.typ;
     }
     
-    public DefaultMutableTreeNode getElementsTree() { 
+    public DefaultMutableTreeNode getElementsTree() {                           // pobierz drzewo elementów
         return this.elementsTree;
     }
     
-    public void setElementsTree(DefaultMutableTreeNode elementsTree) {
-        this.elementsTree=elementsTree;
+    public void setElementsTree(DefaultMutableTreeNode elementsTree) {          // ustaw drzewo elementów
+        this.elementsTree = elementsTree;
     };
     
-    public JPanel getPanel() {
+    public JPanel getPanel() {                                                  // pobierz panel
         return this.panel;
     }
     
-    public Vector<Element> getMousableElements() {
+    public Vector<Element> getMousableElements() {                              // pobierz elementy które można przesówać
         return null;
     }
 }
+
+
+
+
+
+
+
+
 
 
 //
