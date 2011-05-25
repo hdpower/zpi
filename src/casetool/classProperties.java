@@ -71,6 +71,7 @@ public class classProperties extends JDialog {
     private ArrayList<Object> atributesTypes = new ArrayList<Object>();
     private JCheckBox check;
     private HashMap<Integer, JTextArea> metodParameters;
+    private HashMap<Integer, MethodsParameters> metodParameters2;
     private JPanel parametersCardLayoutPanel;
     private Class classData;
     
@@ -90,11 +91,19 @@ public class classProperties extends JDialog {
         initializeClassContainer();
         initializeClassMethodsContainter();
         metodParameters = new HashMap<Integer, JTextArea>();
+        metodParameters2 = new HashMap<Integer, MethodsParameters>();
         parametersCardLayoutPanel.add(new JTextArea("Parametry metod..."), "0");
     }
     
     public void setClass(Class value) {
         this.classData = value;
+    }
+    
+    private class MethodsParameters {
+        
+        public JScrollPane panel;
+        public JTable parametry;
+        public DefaultTableModel modelParametrow;               
     }
     
     private class CheckBoxCellEditor extends AbstractCellEditor implements TableCellEditor {  
@@ -334,9 +343,22 @@ public class classProperties extends JDialog {
                 classMethodsContainerModel.addRow(column);
                 
                 JTextArea nowa = new JTextArea("Parametr 1 [Metody " + lp + "]");
+
+                Object columnNames[] = {"Nazwa parametru", "Typ parametru", "Typ przekazywania"};
+                Object atributesVisibility[] = {"private" + lp, "protected", "public"};
+                
+                MethodsParameters parameters = new MethodsParameters();
+                parameters.modelParametrow = new DefaultTableModel(columnNames, 0);                
+                parameters.parametry = new JTable(parameters.modelParametrow);
+                parameters.panel = new JScrollPane(parameters.parametry);
+                parameters.parametry.getTableHeader().setReorderingAllowed(false);
+                parameters.modelParametrow.addRow(atributesVisibility);
+                parameters.panel.setPreferredSize(new Dimension(600, 100));
+                metodParameters2.put(lp, parameters);
+                
                 metodParameters.put(lp, nowa);
                 //System.out.print(classMethodsContainerModel.getValueAt(0, 3));
-                parametersCardLayoutPanel.add(metodParameters.get(lp), String.valueOf(lp));            
+                parametersCardLayoutPanel.add(metodParameters2.get(lp).panel, String.valueOf(lp));            
                 
                 CardLayout cl = (CardLayout)parametersCardLayoutPanel.getLayout();
                 cl.show(parametersCardLayoutPanel, String.valueOf(lp));
@@ -356,8 +378,9 @@ public class classProperties extends JDialog {
                     classMethodsContainerModel.removeRow(selectedRows);
                     int lp = selectedRows+1;
                     CardLayout cl = (CardLayout)parametersCardLayoutPanel.getLayout();
-                    cl.removeLayoutComponent(metodParameters.get(lp));
+                    cl.removeLayoutComponent(metodParameters2.get(lp).panel);
                     cl.show(parametersCardLayoutPanel, String.valueOf(lp-1));
+                    metodParameters2.remove(lp);
                     //System.out.println("Usunąłem JTextArea nr: " + lp);                   
                 }
             }
@@ -406,10 +429,33 @@ public class classProperties extends JDialog {
                     
                     classMethodsContainerModel.addRow(kopiaWiersza);                                        
 
-                    JTextArea nowa = new JTextArea(metodParameters.get(lp-1).getText());
-                    metodParameters.put(lp, nowa);
-                    //System.out.print(classMethodsContainerModel.getValueAt(0, 3));
-                    parametersCardLayoutPanel.add(metodParameters.get(lp), String.valueOf(lp));            
+//                    JTextArea nowa = new JTextArea(metodParameters.get(lp-1).getText());
+//                    metodParameters.put(lp, nowa);
+//                    //System.out.print(classMethodsContainerModel.getValueAt(0, 3));
+//                    parametersCardLayoutPanel.add(metodParameters.get(lp), String.valueOf(lp)); 
+                    
+                    Object columnNames[] = {"Nazwa parametru", "Typ parametru", "Typ przekazywania"};
+
+                    MethodsParameters parameters = new MethodsParameters();
+                    parameters.modelParametrow = new DefaultTableModel(columnNames, 0);                
+                    parameters.parametry = new JTable(parameters.modelParametrow);
+                    parameters.panel = new JScrollPane(parameters.parametry);
+                    parameters.parametry.getTableHeader().setReorderingAllowed(false); 
+                    parameters.panel.setPreferredSize(new Dimension(600, 100));
+                    int iw = metodParameters2.get(classMethodsContainer.getSelectedRow()+1).modelParametrow.getRowCount();
+                    System.out.println("Liczba do skopiowania: " + iw);
+                    for(int i=0; i<iw; i++) {
+                        Object wiersz[] = new Object[3];
+                        wiersz[0] = metodParameters2.get(classMethodsContainer.getSelectedRow()+1).modelParametrow.getValueAt(i, 0);
+                        wiersz[1] = metodParameters2.get(classMethodsContainer.getSelectedRow()+1).modelParametrow.getValueAt(i, 1);
+                        wiersz[2] = metodParameters2.get(classMethodsContainer.getSelectedRow()+1).modelParametrow.getValueAt(i, 2);
+                        System.out.println(wiersz[0]);
+                        System.out.println(wiersz[1]);
+                        System.out.println(wiersz[2]);
+                        parameters.modelParametrow.addRow(wiersz);
+                    }
+                    metodParameters2.put(lp, parameters);   
+                    parametersCardLayoutPanel.add(metodParameters2.get(lp).panel, String.valueOf(lp));      
 
                     CardLayout cl = (CardLayout)parametersCardLayoutPanel.getLayout();
                     cl.show(parametersCardLayoutPanel, String.valueOf(lp));
