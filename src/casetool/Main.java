@@ -72,6 +72,7 @@ class MainWindow extends JFrame {
     private Integer wysokoscEkranu = 720;
     private JTabbedPane zakladki = new JTabbedPane();
     private ArrayList<Diagram> diagramy = new ArrayList<Diagram>();
+    public Plotno tempCanvas;
 
     //-------------------------------------------------------------------------- konstruktor główny
     public MainWindow() {
@@ -95,7 +96,7 @@ class MainWindow extends JFrame {
 
             public void stateChanged(ChangeEvent e) {
                 
-                Plotno tempCanvas = (Plotno)diagramy.get(zakladki.getSelectedIndex()).panel.getComponent(1);
+                tempCanvas = (Plotno)diagramy.get(zakladki.getSelectedIndex()).panel.getComponent(1);
                 tempCanvas.setCurrentDiagram(diagramy.get(zakladki.getSelectedIndex()));
                 String temp = diagramy.get(zakladki.getSelectedIndex()).getType();
                 initializeDiagramPM(diagramy.get(zakladki.getSelectedIndex()));
@@ -130,11 +131,11 @@ class MainWindow extends JFrame {
                 
                 initializeCaseDiagramMenu();
 
-                Diagram temp=new CaseDiagram();
+                Diagram temp = new CaseDiagram(getInstance());
                 setTabLayout(temp.panel);
 
                 diagramy.add(temp);
-                zakladki.add("Diagram przypadków "+diagramy.size(),diagramy.get(diagramy.size()-1).panel);
+                zakladki.add("Diagram przypadków " + diagramy.size(), diagramy.get(diagramy.size() - 1).panel);
                 initializeDiagramPM(temp);
             }
         };
@@ -163,7 +164,7 @@ class MainWindow extends JFrame {
                 setTabLayout(temp.panel);
 
                 diagramy.add(temp);
-                zakladki.add("Diagram bazy danych "+diagramy.size(),diagramy.get(diagramy.size()-1).panel);
+                zakladki.add("Diagram bazy danych " + diagramy.size(), diagramy.get(diagramy.size() - 1).panel);
                 initializeDiagramPM(temp);
             }
         };
@@ -307,13 +308,14 @@ class MainWindow extends JFrame {
         mD.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_4, java.awt.event.InputEvent.CTRL_MASK));
         mE.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_5, java.awt.event.InputEvent.CTRL_MASK));
         mF.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_6, java.awt.event.InputEvent.CTRL_MASK));
-        mG.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_6, java.awt.event.InputEvent.CTRL_MASK));
+        mG.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_7, java.awt.event.InputEvent.CTRL_MASK));
         
         // obsługa zdarzeń kliknięcia na pozycje w menu
         mA.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "testMenu", "testMenu 1", JOptionPane.ERROR_MESSAGE);
+//                JOptionPane.showMessageDialog(null, "Aktor", "testMenu 1", JOptionPane.ERROR_MESSAGE);
+                ((CaseDiagram)tempCanvas.currentDiagram).addUseCaseElement(CaseDiagram.CaseDiagramTypes.ACTOR);
             }
             
         });
@@ -321,7 +323,8 @@ class MainWindow extends JFrame {
         mB.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "testMenu", "testMenu 2", JOptionPane.ERROR_MESSAGE);
+//                JOptionPane.showMessageDialog(null, "testMenu", "testMenu 2", JOptionPane.ERROR_MESSAGE);
+                ((CaseDiagram)tempCanvas.currentDiagram).addUseCaseElement(CaseDiagram.CaseDiagramTypes.USECASE);
             }
             
         });
@@ -329,7 +332,8 @@ class MainWindow extends JFrame {
         mC.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "testMenu", "testMenu 3", JOptionPane.ERROR_MESSAGE);
+//                JOptionPane.showMessageDialog(null, "testMenu", "testMenu 3", JOptionPane.ERROR_MESSAGE);
+                ((CaseDiagram)tempCanvas.currentDiagram).addLink(CaseDiagram.CaseDiagramTypes.SIMPLELINK);
             }
             
         });
@@ -337,7 +341,8 @@ class MainWindow extends JFrame {
         mD.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "testMenu", "testMenu 4", JOptionPane.ERROR_MESSAGE);
+//                JOptionPane.showMessageDialog(null, "testMenu", "testMenu 4", JOptionPane.ERROR_MESSAGE);
+                ((CaseDiagram)tempCanvas.currentDiagram).addLink(CaseDiagram.CaseDiagramTypes.INHERITLINK);
             }
             
         });
@@ -345,7 +350,8 @@ class MainWindow extends JFrame {
         mE.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "testMenu", "testMenu 5", JOptionPane.ERROR_MESSAGE);
+//                JOptionPane.showMessageDialog(null, "testMenu", "testMenu 5", JOptionPane.ERROR_MESSAGE);
+                ((CaseDiagram)tempCanvas.currentDiagram).addLink(CaseDiagram.CaseDiagramTypes.INCLUDELINK);
             }
             
         });
@@ -353,7 +359,17 @@ class MainWindow extends JFrame {
         mF.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "testMenu", "testMenu 6", JOptionPane.ERROR_MESSAGE);
+              //  JOptionPane.showMessageDialog(null, "testMenu", "testMenu 6", JOptionPane.ERROR_MESSAGE);
+                ((CaseDiagram)tempCanvas.currentDiagram).addLink(CaseDiagram.CaseDiagramTypes.EXTENDLINK);
+            }
+            
+        });
+        
+        mG.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+              //  JOptionPane.showMessageDialog(null, "testMenu", "testMenu 6", JOptionPane.ERROR_MESSAGE);
+                ((CaseDiagram)tempCanvas.currentDiagram).addSystemBox();
             }
             
         });
@@ -404,6 +420,11 @@ class MainWindow extends JFrame {
         menuElementy.add(addProcedure);
         menuElementy.add(addTrigger);
     }
+    
+    //-------------------------------------------------------------------------- pobierz instancje tej klasy
+    public MainWindow getInstance() {
+        return this;
+    }
 }
 
 
@@ -411,7 +432,7 @@ class MainWindow extends JFrame {
 class Plotno extends JPanel {
     
     //-------------------------------------------------------------------------- pola
-    private Diagram currentDiagram;
+    Diagram currentDiagram;
     private Boolean lock = new Boolean(true);
     private int movedElement = -1;
     private int currentElement = -1;
@@ -436,7 +457,7 @@ class Plotno extends JPanel {
                 // wyświetl okienko do modyfikacji elementu
                 Vector<Element> elements = currentDiagram.getMousableElements();
                 elements.get(currentElement).modifyElement(currentDiagram, elements.get(currentElement));
-                System.out.println(" -> ok C");
+
             }
             
         });
@@ -444,7 +465,7 @@ class Plotno extends JPanel {
         deleteElement.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                System.out.println(" -> ok D");
+                
                 // usuń element
                 Vector<Element> elements = currentDiagram.getMousableElements();
                 
@@ -581,4 +602,5 @@ class Plotno extends JPanel {
             currentDiagram.drawElements(g);
         }
     }
+    
 }

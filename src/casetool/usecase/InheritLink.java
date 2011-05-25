@@ -1,13 +1,39 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package casetool.usecase;
+
+import java.awt.BasicStroke;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
 
 /**
  *
- * @author al
+ *      obiekt tej klasy umożliwia tworzenie obiektów InheritLink
+ * 
  */
-public class InheritLink {
+//------------------------------------------------------------------------------ klasa InheritLink 
+public class InheritLink extends Link {
     
+    //-------------------------------------------------------------------------- pola
+    String str = "<<inlclude>>";
+    Graphics2D ga;
+    
+    //-------------------------------------------------------------------------- konstruktor główny
+    public InheritLink(LinkPoint pfrom, LinkPoint pto) {
+
+        super(pfrom, pto);
+
+    }
+
+    @Override
+    public void draw(Graphics g) {
+        
+        ga = (Graphics2D)g;
+        
+        ga.setColor(color);
+        ga.setStroke(new BasicStroke(stroke));
+        
+        ga.drawLine(from.getX()+4, from.getY()+4, to.getX()+4, to.getY()+4);
+    }
+
+
 }
