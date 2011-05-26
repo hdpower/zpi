@@ -210,6 +210,7 @@ public class classProperties extends JDialog {
         
         Object columnNames[] = {"Nazwa atrybutu", "Typ", "Widoczność", "Liczebność", "Wartość początkowa"};
         Object atributesVisibility[] = {"private", "protected", "public"};
+        Object atributesCount[] = {"1", "*", "0..1", "0..*", "1..1", "1..*"};
         
         classContainerModel = new DefaultTableModel(columnNames, 0);
         classContainer = new JTable(classContainerModel);        
@@ -218,9 +219,11 @@ public class classProperties extends JDialog {
         classContainer.getTableHeader().setReorderingAllowed(false);
         
         JComboBox classAtributesVisibility = new JComboBox(atributesVisibility);
+        JComboBox classAtributesCount = new JComboBox(atributesCount);
         
         classContainer.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(classAtributesTypesComboBox));
         classContainer.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(classAtributesVisibility));
+        classContainer.getColumnModel().getColumn(3).setCellEditor(new DefaultCellEditor(classAtributesCount));
     }
     
     private void initializeClassMethodsContainter() {
@@ -288,7 +291,7 @@ public class classProperties extends JDialog {
             
             public void actionPerformed(ActionEvent e) {
                 int lp = classContainer.getRowCount() + 1;
-                Object column[] = {"Atrybut " + lp, "int", "private", "1..*", "null"};
+                Object column[] = {"Atrybut " + lp, "int", "private", "1..*", ""};
                 classContainerModel.addRow(column);
             }
         });
@@ -325,7 +328,9 @@ public class classProperties extends JDialog {
         JButton cloneRowContainerModelAtributes = new JButton("Duplikuj");
         cloneRowContainerModelAtributes.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e) {                
+            public void actionPerformed(ActionEvent e) { 
+                
+                classContainer.editCellAt(-1, -1);
                 
                 if(classContainer.getSelectedRow() >= 0) {
                     
@@ -368,7 +373,7 @@ public class classProperties extends JDialog {
                 parameters.parametry.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(typyZwracane));
                 parameters.parametry.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(trybPrzekazywaniaJCB));
                 typyZwracane.setEditable(true);
-                trybPrzekazywaniaJCB.setEditable(true);
+                //trybPrzekazywaniaJCB.setEditable(true);
                 metodParameters2.put(lp, parameters);
                 
                 metodParameters.put(lp, nowa);
@@ -615,6 +620,8 @@ public class classProperties extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 
                 boolean isCorrect = true;
+                classContainer.editCellAt(-1, -1);
+                classMethodsContainer.editCellAt(-1, -1);
                 
                 if(className.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Podaj nazwę klasy!", "BŁĄD!!!", JOptionPane.ERROR_MESSAGE);
@@ -628,6 +635,38 @@ public class classProperties extends JDialog {
                     tempClass.setStatic(classStaticCheckBox.isSelected());
                     tempClass.setDocumentation(classDocumentation.getText());
                     tempClass.setVisibility(classVisibilityCombo.getSelectedItem().toString());
+                    
+                    for(int i=0; i<classContainer.getRowCount(); i++) {
+                        String nazwa = classContainer.getValueAt(i, 0).toString();
+                        String typ   = classContainer.getValueAt(i, 1).toString();
+                        String widocznosc = classContainer.getValueAt(i, 2).toString();
+                        String liczebnosc = classContainer.getValueAt(i, 3).toString();
+                        String poczatkowa = classContainer.getValueAt(i, 4).toString();
+                        
+                        tempClass.dodajAtrybut(nazwa, typ, widocznosc, liczebnosc, poczatkowa);
+                    }
+                    
+                    for(int i=0; i<classMethodsContainer.getRowCount(); i++) {
+                        String nazwa = classMethodsContainer.getValueAt(i, 0).toString();
+                        String typZw = classMethodsContainer.getValueAt(i, 1).toString();
+                        String widoc = classMethodsContainer.getValueAt(i, 2).toString();
+                        boolean poli = (boolean)classMethodsContainer.getValueAt(i, 3);
+                        
+                        Class klasa = new Class();
+                        Class.ClassMethod metoda = klasa.new ClassMethod(nazwa, typZw, widoc, poli);                        
+                        
+                        int iloscParametrow = metodParameters2.get(i+1).modelParametrow.getRowCount();
+                        for(int j=0; j<iloscParametrow; j++) {
+                            String nazwaParametru = metodParameters2.get(i+1).parametry.getValueAt(j, 0).toString();
+                            String typParametru   = metodParameters2.get(i+1).parametry.getValueAt(j, 1).toString();
+                            String trybParametru  = metodParameters2.get(i+1).parametry.getValueAt(j, 2).toString();
+                            
+                            Class.ClassMethod.Parametr parametr = metoda.new Parametr(nazwaParametru, typParametru, trybParametru);
+                            metoda.dodajParametr(parametr);
+                        }
+                        
+                        tempClass.dodajMetode(metoda);
+                    }
 
                     if(classData == null) classDiagram.classes.add(tempClass);
                     else classDiagram.classes.set(classDiagram.classes.indexOf(classData), tempClass);
@@ -685,6 +724,63 @@ public class classProperties extends JDialog {
             
             classAbstractCheckBox.setSelected(classData.getAbstract());
             classStaticCheckBox.setSelected(classData.getStatic());
+            
+            for(int i=0; i<classData.getClassAtributes().size(); i++) {
+                Object wiersz[] = new Object[5];
+                wiersz[0] = classData.getNazwa(classData.getClassAtributes().get(i));
+                wiersz[1] = classData.getTyp(classData.getClassAtributes().get(i));
+                wiersz[2] = classData.getWidocznosc(classData.getClassAtributes().get(i));
+                wiersz[3] = classData.getLiczebnosc(classData.getClassAtributes().get(i));
+                wiersz[4] = classData.getPoczatkowa(classData.getClassAtributes().get(i));
+                
+                classContainerModel.addRow(wiersz);
+            }
+            
+            for(int i=0; i<classData.getClassMethods().size(); i++) {
+                int lp = classMethodsContainer.getRowCount() + 1;
+                
+                Object wiersz[] = new Object[4];
+                wiersz[0] = classData.getNazwa(classData.getClassMethods().get(i));
+                wiersz[1] = classData.getTyp(classData.getClassMethods().get(i));
+                wiersz[2] = classData.getWidocznosc(classData.getClassMethods().get(i));
+                wiersz[3] = classData.getPolimorfizm(classData.getClassMethods().get(i));
+                
+                classMethodsContainerModel.addRow(wiersz);
+                
+                Object columnNames[] = {"Nazwa parametru", "Typ parametru", "Typ przekazywania"};
+                
+                Object trybPrzekazywania[] = {"* - wskaźnik", "& - referencja", "wartość"};
+                JComboBox typyZwracane = new JComboBox(atributesTypes.toArray());
+                JComboBox trybPrzekazywaniaJCB   = new JComboBox(trybPrzekazywania);     
+                
+                MethodsParameters parameters = new MethodsParameters();
+                parameters.modelParametrow = new DefaultTableModel(columnNames, 0);                
+                parameters.parametry = new JTable(parameters.modelParametrow);
+                parameters.panel = new JScrollPane(parameters.parametry);
+                parameters.parametry.getTableHeader().setReorderingAllowed(false);
+                parameters.panel.setPreferredSize(new Dimension(600, 200));
+                parameters.parametry.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(typyZwracane));
+                parameters.parametry.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(trybPrzekazywaniaJCB));
+                typyZwracane.setEditable(true);
+                //trybPrzekazywaniaJCB.setEditable(true);
+                metodParameters2.put(lp, parameters);
+                
+                for(int j=0; j<classData.getClassMethods().get(i).getParametry().size(); j++) {
+                    Object parametr[] = new Object[3];
+                    parametr[0] = classData.getClassMethods().get(i).getParametry().get(j).getNazwa();
+                    parametr[1] = classData.getClassMethods().get(i).getParametry().get(j).getTyp();
+                    parametr[2] = classData.getClassMethods().get(i).getParametry().get(j).getPrzekazywanie();
+                    
+                    parameters.modelParametrow.addRow(parametr);
+                }
+
+                parametersCardLayoutPanel.add(metodParameters2.get(lp).panel, String.valueOf(lp));            
+                
+                CardLayout cl = (CardLayout)parametersCardLayoutPanel.getLayout();
+                cl.show(parametersCardLayoutPanel, String.valueOf(lp));
+                //System.out.println("Dodałej JTextArea nr: " + lp);
+                
+            }
         }
         
         this.setVisible(true);        
