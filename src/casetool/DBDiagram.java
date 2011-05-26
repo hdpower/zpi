@@ -64,10 +64,38 @@ public void setContextMenuOptions(DefaultMutableTreeNode selectedNode, JPopupMen
         contextMenu.add(addTable);
     }
     else if(selectedNode.toString().equals("Perspektywy")) ;
-    /*else if(selectedNode.toString().equals("Wyzwalacze")) ;  
-    else if(selectedNode.toString().equals("Funkcje")) ;
-    else if(selectedNode.toString().equals("Procedury")) ;
-    else if(selectedNode.toString().equals("Użytkownicy")) ;
+    else if(selectedNode.toString().equals("Funkcje")) 
+    {
+        JMenuItem addFun = new JMenuItem("Dodaj funkcje");
+        addFun.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    functionProperties fc = new functionProperties();
+                    fc.ShowPanel();
+                }
+            });        
+        contextMenu.add(addFun);
+    }
+    else if(selectedNode.toString().equals("Perspektywy"))
+    {
+        JMenuItem addView = new JMenuItem("Dodaj Perspektywe");
+        contextMenu.add(addView);
+    }
+    else if(selectedNode.toString().equals("Wyzwalacze")) 
+    {
+        JMenuItem addTrigger = new JMenuItem("Dodaj Wyzwalacz");
+        contextMenu.add(addTrigger);
+    }
+    else if(selectedNode.toString().equals("Procedury")) 
+    {
+        JMenuItem addProcedure = new JMenuItem("Dodaj Procedure");
+        contextMenu.add(addProcedure);
+    }
+    else if(selectedNode.toString().equals("Użytkownicy")) 
+    {
+        JMenuItem addUser = new JMenuItem("Dodaj Użytkownika");
+        contextMenu.add(addUser);
+    }/*
     else
         {
             
@@ -251,7 +279,7 @@ class Table extends Element
         if(visible)
         {
         ct.setColor(Color.WHITE);
-        Color d = new Color(color.getRed() ,color.getGreen() , color.getBlue(), 60);
+        Color c = new Color(color.getRed() ,color.getGreen() , color.getBlue(), 60);
         ct.fillRect(x, fontSize+margin*2, width, height);
         ct.setColor(Color.BLACK);
         for(int i=0;i<fields.size();i++)
@@ -259,11 +287,12 @@ class Table extends Element
             label=fields.get(i).getName()+" : "+fields.get(i).getType();
             ct.drawString(label, x+margin, y+(2*fontSize)+(3*margin)+((fontSize+margin)*i));
         }
-        ct.setColor(d);
+        ct.setColor(c);
         ct.fillRect(x, y, width,fontSize+margin*2 );
         
         ct.drawRect(x, y, width, height);
         ct.setColor(Color.BLACK);
+        ct.setFont((new java.awt.Font("monospaced", 0, 11)));
         ct.drawString(name,x+margin,y+margin+fontSize);
         }
     }
