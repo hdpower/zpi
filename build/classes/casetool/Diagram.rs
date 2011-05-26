@@ -1,2 +1,0 @@
-casetool.Diagram
-casetool.Element
