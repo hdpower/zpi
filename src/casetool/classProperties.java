@@ -267,10 +267,10 @@ public class classProperties extends JDialog {
         atributesTypes.add("long"); atributesTypes.add("float"); atributesTypes.add("double");
         atributesTypes.add("char"); atributesTypes.add("string"); atributesTypes.add("boolean");
         classAtributesTypesComboBox = new JComboBox(atributesTypes.toArray());
-        classAtributesTypesComboBox.setEditable(true);
+        //classAtributesTypesComboBox.setEditable(true);
         
         classMethodsTypesComboBox = new JComboBox(atributesTypes.toArray());
-        classMethodsTypesComboBox.setEditable(true);
+        //classMethodsTypesComboBox.setEditable(true);
     }
     
     public void showWindow() {
@@ -620,12 +620,39 @@ public class classProperties extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 
                 boolean isCorrect = true;
+                String  error = "";
                 classContainer.editCellAt(-1, -1);
                 classMethodsContainer.editCellAt(-1, -1);
                 
-                if(className.getText().isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Podaj nazwę klasy!\nNie ładnie.", "BŁĄD!!!", JOptionPane.ERROR_MESSAGE);
+                if(className.getText().isEmpty()) {                    
+                    error += " - Podaj nazwę klasy! \n";
                     isCorrect = false;
+                }
+                
+                for(int i=0; i<classContainer.getRowCount(); i++) {
+                    String nazwa = classContainer.getValueAt(i, 0).toString();
+                    if(nazwa.isEmpty()) {
+                        error += " - Podaj nazwę atrybutu: " + (i+1) + "\n";
+                        isCorrect = false;
+                    }
+                }
+                
+                for(int i=0; i<classMethodsContainer.getRowCount(); i++) {
+                    String nazwa = classMethodsContainer.getValueAt(i, 0).toString();
+                    if(nazwa.isEmpty()) {
+                        error += " - Podaj nazwę metody: " + (i+1) + "\n";                                               
+                        isCorrect = false;
+                    }
+                    
+                    int iloscParametrow = metodParameters2.get(i+1).modelParametrow.getRowCount();
+                    for(int j=0; j<iloscParametrow; j++) {
+                        metodParameters2.get(i+1).parametry.editCellAt(-1, -1);
+                        String nazwaParametru = metodParameters2.get(i+1).parametry.getValueAt(j, 0).toString();
+                        if(nazwaParametru.isEmpty()) {
+                            error += " - Podaj nazwę parametru: " + (j+1) + " Metody: " + (i+1) + "\n";
+                            isCorrect = false;
+                        }
+                    }
                 }
                 
                 if(isCorrect) {
@@ -657,6 +684,7 @@ public class classProperties extends JDialog {
                         
                         int iloscParametrow = metodParameters2.get(i+1).modelParametrow.getRowCount();
                         for(int j=0; j<iloscParametrow; j++) {
+                            metodParameters2.get(i+1).parametry.editCellAt(-1, -1);
                             String nazwaParametru = metodParameters2.get(i+1).parametry.getValueAt(j, 0).toString();
                             String typParametru   = metodParameters2.get(i+1).parametry.getValueAt(j, 1).toString();
                             String trybParametru  = metodParameters2.get(i+1).parametry.getValueAt(j, 2).toString();
@@ -673,6 +701,8 @@ public class classProperties extends JDialog {
 
                     //classDiagram.refreshTables();
                     dispose();
+                } else {
+                    JOptionPane.showMessageDialog(null, error, "BŁĄD!!!", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
