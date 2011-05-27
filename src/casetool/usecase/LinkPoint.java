@@ -43,7 +43,9 @@ public class LinkPoint extends Element {
         this.y = p.y + 10;
         
     }
- 
+
+    public void changeDisplayMode() { }
+
     //-------------------------------------------------------------------------- rysuj element
     @Override
     public void draw(Graphics g) {

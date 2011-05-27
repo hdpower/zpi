@@ -677,7 +677,7 @@ public class classProperties extends JDialog {
                         String nazwa = classMethodsContainer.getValueAt(i, 0).toString();
                         String typZw = classMethodsContainer.getValueAt(i, 1).toString();
                         String widoc = classMethodsContainer.getValueAt(i, 2).toString();
-                        boolean poli = (boolean)classMethodsContainer.getValueAt(i, 3);
+                        boolean poli = false;//(boolean)classMethodsContainer.getValueAt(i, 3);
                         
                         Class klasa = new Class();
                         Class.ClassMethod metoda = klasa.new ClassMethod(nazwa, typZw, widoc, poli);                        

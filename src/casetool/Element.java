@@ -37,6 +37,7 @@ public abstract class Element {
     protected Color color = Color.BLACK;
     protected int margin = 5;
     protected int fontSize = 10;
+    protected int displayMode=1;
     
     //-------------------------------------------------------------------------- metody
     
@@ -67,6 +68,17 @@ public abstract class Element {
     
     public void setVisible(Boolean visible) { this.visible = visible; }         // widoczność
     public Boolean getVisible() { return visible; }
+
+    public abstract void changeDisplayMode();
+    public void setDisplayMode(int displayMode)
+    {
+        this.displayMode=displayMode;
+    }
+
+    public int getDisplayMode()
+    {
+        return this.displayMode;
+    }
     
     
     public Boolean isMouseOverElement(int mouseX, int mouseY) { return false; } // czy mysz znajduje się nad elementem

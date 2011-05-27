@@ -45,7 +45,8 @@ public class Link extends Element {
         to = pto;
 
     }
-        
+
+    public void changeDisplayMode() { }
     
     @Override
     public String toString() {

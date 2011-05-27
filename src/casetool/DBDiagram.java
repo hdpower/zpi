@@ -14,6 +14,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 public class DBDiagram extends Diagram
@@ -45,6 +47,52 @@ public DBDiagram()
     elementsTree.add(proceduresNode);
     elementsTree.add(usersNode);
     }
+
+public DBDiagram(org.w3c.dom.Element XMLroot)
+{
+    this();
+    NodeList tablesXML=XMLroot.getChildNodes();
+    for(int i=0;i<tablesXML.getLength();i++)
+        if(tablesXML.item(i) instanceof org.w3c.dom.Element)
+        {
+            addTable(tablesXML.item(i));
+        }
+    refreshTables();
+}
+
+public void addTable(Node XMLtable)
+{
+    NodeList tableAttributesXML=XMLtable.getChildNodes();
+    String tempName="READ_ERROR";
+    Color tempColor=Color.GREEN;
+    int tempX=5, tempY=5, tempDisplayMode=1;
+    NodeList fieldsTemp=null;
+    Boolean tempIAL=true;
+    for(int i=0;i<tableAttributesXML.getLength();i++)
+        if(tableAttributesXML.item(i) instanceof org.w3c.dom.Element)
+        {
+            String propety=tableAttributesXML.item(i).getNodeName();
+            String value=tableAttributesXML.item(i).getTextContent();
+            if(propety.equals("name")) tempName=value;
+            try
+            {
+            if(propety.equals("color")) tempColor=new Color(Integer.parseInt(value));
+            if(propety.equals("x")) tempX=Integer.parseInt(value);
+            if(propety.equals("y")) tempY=Integer.parseInt(value);
+            if(propety.equals("displayMode")) tempDisplayMode=Integer.parseInt(value);
+            if(propety.equals("isAutoLocated")) tempIAL=Boolean.valueOf(value);
+            if(propety.equals("fields")) fieldsTemp=tableAttributesXML.item(i).getChildNodes();
+            }
+            catch(Exception ex) { }
+        }
+        Table tempTable=new Table(tempName, tempColor);
+        if (fieldsTemp!=null) tempTable.addFields(fieldsTemp);
+        tempTable.setX(tempX);
+        tempTable.setY(tempY);
+        tempTable.setDisplayMode(tempDisplayMode);
+        tempTable.autoLocated=tempIAL;
+        tables.add(tempTable);
+}
 
 public void setContextMenuOptions(DefaultMutableTreeNode selectedNode, JPopupMenu contextMenu)
     {
@@ -125,7 +173,7 @@ public void drawElements(Graphics g)
         tables.get(i).setPosition(tables,i,panel.getComponent(1).getWidth(), panel.getHeight());
         tables.get(i).draw(g);
     }
-    if(tables.size()>=2) drawConnections(g);
+    //if(tables.size()>=2) drawConnections(g);
 }
 
 public void drawConnections(Graphics g)
@@ -199,6 +247,16 @@ public Vector<Element> getMousableElements()
     return tables;
 }
 
+public String toXML()
+{
+    String XML="";
+    XML+="<diagram type='"+getType()+"'>\n";
+    for(int i=0;i<tables.size();i++)
+        XML+=tables.get(i).toXML();
+    XML+="</diagram>\n";
+    return XML;
+}   
+
 }
 
 class Table extends Element
@@ -211,13 +269,41 @@ class Table extends Element
         this.name=name;
         this.color=color;
     }
-    
+
+     public void addFields(NodeList fieldsXML)
+    {
+        for(int i=0;i<fieldsXML.getLength();i++)
+            if(fieldsXML.item(i) instanceof org.w3c.dom.Element)
+            {
+                String tempName="", tempType="";
+                String tempNotNull="", tempUnique="", tempPK="";
+                NodeList fieldPropeties=fieldsXML.item(i).getChildNodes();
+                for(int j=0;j<fieldPropeties.getLength();j++)
+                    if(fieldPropeties.item(j) instanceof org.w3c.dom.Element)
+                    {
+                    String propety=fieldPropeties.item(j).getNodeName();
+                    String value=fieldPropeties.item(j).getTextContent();
+                    if(propety.equals("name"))  tempName=value;
+                    if(propety.equals("type"))  tempType=value;
+
+                    if(propety.equals("notnull"))  tempNotNull=value;
+                    if(propety.equals("unique"))  tempUnique=value;
+                    if(propety.equals("primarykey"))  tempPK=value;
+                    }
+                fields.add(new Field(tempName, tempType, tempNotNull, tempUnique, tempPK));
+            }
+    }
+
     public Boolean isMouseOverElement(int mouseX, int mouseY)
     {
         int x1=getX();
         int x2=x+getWidth();
         int y1=getY();
-        int y2=y+getHeight();
+        int y2;
+        if(displayMode==1)
+            y2=y+getHeight();
+        else
+            y2=y+fontSize+(2*margin);
         if(mouseX>x1 && mouseX<x2 && mouseY>y1 && mouseY<y2)
             return true;
         else
@@ -278,26 +364,46 @@ class Table extends Element
         int height=getHeight();
         if(visible)
         {
+        Color backgroundColor = new Color(color.getRed() ,color.getGreen() , color.getBlue(), 60);
+        if(displayMode==1)
+        {
         ct.setColor(Color.WHITE);
-        Color c = new Color(color.getRed() ,color.getGreen() , color.getBlue(), 60);
-        ct.fillRect(x, fontSize+margin*2, width, height);
+        ct.fillRect(x, y+fontSize+margin*2, width, height);
         ct.setColor(Color.BLACK);
         for(int i=0;i<fields.size();i++)
         {
             label=fields.get(i).getName()+" : "+fields.get(i).getType();
             ct.drawString(label, x+margin, y+(2*fontSize)+(3*margin)+((fontSize+margin)*i));
         }
-        ct.setColor(c);
+        }
+        ct.setColor(backgroundColor);
         ct.fillRect(x, y, width,fontSize+margin*2 );
-        
-        ct.drawRect(x, y, width, height);
+
+        if(displayMode==1) ct.drawRect(x, y, width, height);
         ct.setColor(Color.BLACK);
-        ct.setFont((new java.awt.Font("monospaced", 0, 11)));
         ct.drawString(name,x+margin,y+margin+fontSize);
         }
     }
     
-    public String toXML() { return "<table>"+name+"</table>"; }
+    public String toXML()
+    {
+        String XML="";
+        XML+="  <table>\n";
+        XML+="    <name>"+name+"</name>\n";
+        XML+="    <color>"+color.getRGB()+"</color>\n";
+        XML+="    <x>"+x+"</x>\n";
+        XML+="    <y>"+y+"</y>\n";
+        XML+="    <isAutoLocated>"+autoLocated+"</isAutoLocated>\n";
+        XML+="    <displayMode>"+displayMode+"</displayMode>\n";
+        XML+="    <comment>"+comment+"</comment>\n";
+        XML+="    <fields>\n";
+        for(int i=0;i<fields.size();i++)
+            XML+=fields.get(i).toXML();
+        XML+="    </fields>\n";
+        XML+="  </table>\n";
+        return XML;
+    }
+
     public void modifyElement(Diagram diagram, Element element)
     {
         tablePropeties tp=new tablePropeties((DBDiagram)diagram);
@@ -306,11 +412,17 @@ class Table extends Element
         tp.showWindow();
     }
     
-        public void deleteElement(Diagram diagram, Element element)
-        {
-            DBDiagram diagramT=(DBDiagram)diagram;
-            diagramT.tables.remove((Table)element);
-        }
+    public void deleteElement(Diagram diagram, Element element)
+    {
+        DBDiagram diagramT=(DBDiagram)diagram;
+        diagramT.tables.remove((Table)element);
+    }
+
+    public void changeDisplayMode()
+    {
+       if(displayMode==0) displayMode=1;
+       else displayMode=0;
+    }
 }
 
 class Field
@@ -321,13 +433,13 @@ class Field
     private Boolean unique;
     private Boolean primary_key;
     
-    public Field(String name, String type, Boolean not_null, Boolean unique, Boolean primary_key)
+    public Field(String name, String type, String not_null, String unique, String primary_key)
     {
-        this.name=name;
-        this.type=type;
-        this.not_null=not_null;
-        this.unique=unique;
-        this.primary_key=primary_key;
+        setName(name);
+        setType(type);
+        setNotNull(not_null);
+        setUnique(unique);
+        setPrimaryKey(primary_key);
     }
     
     public void setName(String name)
@@ -348,6 +460,55 @@ class Field
     public String getType()
     {
         return this.type;
+    }
+
+    public String getNotNull()
+    {
+        if(this.not_null.booleanValue()) return "tak";
+        else return "nie";
+    }
+
+    public void setNotNull(String not_null)
+    {
+        if(not_null.toLowerCase().equals("tak")) this.not_null=new Boolean(true);
+        else this.not_null=new Boolean(false);
+    }
+
+    public String getUnique()
+    {
+        if(this.unique.booleanValue()) return "tak";
+        else return "nie";
+    }
+
+    public void setUnique(String unique)
+    {
+        if(unique.toLowerCase().equals("tak")) this.unique=true;
+        else this.unique=false;
+    }
+
+    public String getPrimaryKey()
+    {
+        if(this.primary_key.booleanValue()) return "tak";
+        else return "nie";
+    }
+
+    public void setPrimaryKey(String primary_key)
+    {
+        if(primary_key.toLowerCase().equals("tak")) this.primary_key=true;
+        else this.primary_key=false;
+    }
+
+    public String toXML()
+    {
+        String XML="";
+        XML+="      <field>\n";
+        XML+="        <name>"+getName()+"</name>\n";
+        XML+="        <type>"+getType()+"</type>\n";
+        XML+="        <notnull>"+getNotNull()+"</notnull>\n";
+        XML+="        <unique>"+getUnique()+"</unique>\n";
+        XML+="        <primarykey>"+getPrimaryKey()+"</primarykey>\n";
+        XML+="      </field>\n";
+        return XML;
     }
 }
 

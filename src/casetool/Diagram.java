@@ -18,14 +18,25 @@ public abstract class Diagram {
     public JPanel panel = new JPanel();
     protected DefaultMutableTreeNode elementsTree = new DefaultMutableTreeNode("Elementy");
     protected String typ;
-    protected String source;
+    protected String source="";
+    protected String name="";
 
     //-------------------------------------------------------------------------- metody
     
     public String getType() {                                                   // pobierz typ
         return this.typ;
     }
-    
+
+    public String getName()
+    {
+        return this.name;
+    }
+
+    public void setName(String name)
+    {
+        this.name=name;
+    }
+
     public DefaultMutableTreeNode getElementsTree() {                           // pobierz drzewo elementów
         return this.elementsTree;
     }
@@ -40,6 +51,26 @@ public abstract class Diagram {
     
     public Vector<Element> getMousableElements() {                              // pobierz elementy które można przesówać
         return null;
+    }
+
+    public String getSource()
+    {
+        return source;
+    }
+
+    public void setSource(String source)
+    {
+        this.source=source;
+    }
+
+    public boolean isProjectWasSaved()
+    {
+        return !source.isEmpty();
+    }
+
+    public String toXML()
+    {
+    return "<diagram type='"+getType()+"'></diagram>";
     }
 }
 

@@ -40,6 +40,17 @@ public class CaseDiagram extends Diagram {
     
     
     //-------------------------------------------------------------------------- konstruktor domyślny diagramu
+    
+    public CaseDiagram()
+    {
+        
+    }
+
+    public CaseDiagram(org.w3c.dom.Element XMLroot)
+    {
+        this();
+    }
+
     public CaseDiagram(MainWindow pmw) {
         
         // status: narzazie ok
