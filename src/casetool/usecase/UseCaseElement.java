@@ -25,7 +25,9 @@ public class UseCaseElement extends Element {
     public void draw(Graphics g) {
         
     }
-    
+
+    public void changeDisplayMode() { }
+
     //-------------------------------------------------------------------------- czy kursor jest nad obiektem
     @Override
     public Boolean isMouseOverElement(int mouseX, int mouseY) {

@@ -95,26 +95,34 @@ public void showWindow()
    
 
 tableModel=new DefaultTableModel();
-tableModel.addColumn("name");
-tableModel.addColumn("type");
-tableModel.addColumn("not_null");
-tableModel.addColumn("unique");
-tableModel.addColumn("pk");
-tableModel.addRow(new Object[]{"Nazwa pola","Typ pola","NOT NULL","UNIQUE","PK"});
+tableModel.addColumn("Nazwa pola");
+tableModel.addColumn("Typ pola");
+tableModel.addColumn("NOT NULL");
+tableModel.addColumn("UNIQUE");
+tableModel.addColumn("PRIMARY KEY");
     if(tableData!=null) 
             {
                 tableName.setText(tableData.toString());
                 for(int i=0;i<tableData.fields.size();i++)
-                    tableModel.addRow(new Object[]{tableData.fields.get(i).getName(),tableData.fields.get(i).getType(),null,null,null});
+                   tableModel.addRow(new Object[]{tableData.fields.get(i).getName(),tableData.fields.get(i).getType(),tableData.fields.get(i).getNotNull(),tableData.fields.get(i).getUnique(),tableData.fields.get(i).getPrimaryKey()});
             }
 table = new JTable(tableModel);
 typesTab=new Object[] {"CHAR","VARCHAR","TEXT","INT","FLOAT","TIMESTAMP","TINYINT","SMALLINT","MEIUMINT","INT","BIGINT"};
 JComboBox typesComboBox=new JComboBox(typesTab);
 typesComboBox.setEditable(true);
 typesComboBox.setPreferredSize(new Dimension(90,20));
+JComboBox notNullComboBox=new JComboBox(new Object[] {"tak","nie"});
+JComboBox uniqueComboBox=new JComboBox(new Object[] {"tak","nie"});
+JComboBox PrimaryKeyComboBox=new JComboBox(new Object[] {"tak","nie"});
 table.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(typesComboBox));
 table.getColumnModel().getColumn(0).setMinWidth(270);
 table.getColumnModel().getColumn(1).setMinWidth(90);
+table.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(notNullComboBox));
+table.getColumnModel().getColumn(2).setMinWidth(80);
+table.getColumnModel().getColumn(3).setCellEditor(new DefaultCellEditor(uniqueComboBox));
+table.getColumnModel().getColumn(3).setMinWidth(80);
+table.getColumnModel().getColumn(4).setCellEditor(new DefaultCellEditor(PrimaryKeyComboBox));
+table.getColumnModel().getColumn(4).setMinWidth(80);
 class checkboxRenderer extends JPanel implements TableCellRenderer
 {
     private JPanel content=new JPanel();
@@ -189,43 +197,41 @@ deleteRow.addActionListener(new ActionListener() {
             }
         });
 
-table.setPreferredSize(new Dimension(600,600));
-    
     OK.setPreferredSize(new Dimension(100,20));
     OK.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                Boolean isValid=true;
+                 Boolean isValid=true;
                 System.out.println(table.getCellEditor(0, 3));
                 Vector<String> errorMessage=new Vector<String>();//String errorMessage=new String();
-                String tempName,tempType;
+                String tempName="",tempType="", tempNotNull="", tempUnique="", tempPK="";
                 if(tableName.getText().isEmpty())
                 {
                     isValid=false;
-                    errorMessage.add("Wprowadź nazwę tabeli");
+                    errorMessage.add("Wprowadź nazwę tabeli.\n");
                 }
 
-                    Table tempTable;
-                    if(tableData==null)tempTable=new Table(tableName.getText(),colorsDictionary.get(tableColor.getSelectedItem()));
-                    else
+                    Table tempTable=new Table(tableName.getText(),colorsDictionary.get(tableColor.getSelectedItem()));
+
+                    for(int i=0;i<tableModel.getRowCount();i++)
                     {
-                        tempTable = tableData;
-                        tempTable.setName(tableName.getText());
-                        tempTable.setColor(colorsDictionary.get(tableColor.getSelectedItem()));
-                        //tempTable.setVisible(visibleDictionary.get(tableVisible.getSelectedItem()));
-                    }
-                    for(int i=1;i<tableModel.getRowCount();i++)
-                    {
+                        try
+                        {
                         tempName=tableModel.getValueAt(i, 0).toString();
                         tempType=tableModel.getValueAt(i, 1).toString();
+                        tempNotNull=tableModel.getValueAt(i, 2).toString();
+                        tempUnique=tableModel.getValueAt(i, 3).toString();
+                        tempPK=tableModel.getValueAt(i, 4).toString();
+                        }
+                        catch(Exception ex) { }
                         if(!tempName.isEmpty() && !tempType.isEmpty())
-                            tempTable.fields.add(new Field(tempName,tempType,false,null,null));
+                            tempTable.fields.add(new Field(tempName,tempType,tempNotNull,tempUnique,tempPK));
                         else if(tempName.isEmpty() || tempType.isEmpty())
                         {
-                            errorMessage.add("Podaj poprawnę nazwę i typ pola w wierszu nr. "+i);
+                            errorMessage.add("Podaj poprawnę nazwę i typ pola w wierszu nr. "+i+".\n");
                             isValid=false;
                         }
-                            
+
                     }
                 if(isValid)
                 {
@@ -248,7 +254,9 @@ table.setPreferredSize(new Dimension(600,600));
     Cancel.setPreferredSize(new Dimension(100,20));
     panel.add(tableNameLabel);
     panel.add(tableName);
-    panel.add(table);
+    JScrollPane tableContainer=new JScrollPane(table);
+    tableContainer.setPreferredSize(new Dimension(600,600));
+    panel.add(tableContainer);
     panel.add(tableColorLabel);
     panel.add(tableColor);
     //panel.add(tableVisibleLabel);

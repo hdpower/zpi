@@ -38,7 +38,12 @@ public class ClassDiagram extends Diagram
         elementsTree.add(assemblingNode);
         elementsTree.add(noteNode);
     }
-    
+
+    public ClassDiagram(org.w3c.dom.Element XMLroot)
+    {
+        this();
+    }
+
     public ClassDiagram getInstance() {
         return this;
     }
@@ -115,7 +120,9 @@ class Class extends Element {
         this.name  = name;
         this.color = color;
     }
-    
+
+    public void changeDisplayMode() { }
+
     public class ClassAtribute {
         
         private String nazwa;

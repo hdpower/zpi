@@ -7,6 +7,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.File;
+import java.io.FileWriter;
+import javax.swing.filechooser.FileFilter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
@@ -17,6 +20,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
 
 /*
  *==============================================================================
@@ -61,6 +67,8 @@ public class Main {
 class MainWindow extends JFrame {
     
     //-------------------------------------------------------------------------- pola
+    private String projectFileExtension="ctp";
+    private FileFilter filesFilter;
     private JMenuBar mainMenu;
     private DefaultMutableTreeNode projectManagerElements;
     private JTree projectManager;
@@ -95,22 +103,38 @@ class MainWindow extends JFrame {
         ChangeListener changeTab = new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
-                
-                tempCanvas = (Plotno)diagramy.get(zakladki.getSelectedIndex()).panel.getComponent(1);
-                tempCanvas.setCurrentDiagram(diagramy.get(zakladki.getSelectedIndex()));
-                String temp = diagramy.get(zakladki.getSelectedIndex()).getType();
-                initializeDiagramPM(diagramy.get(zakladki.getSelectedIndex()));
-                
-                if(temp.equals("database")) {
+                int tabNumber=zakladki.getSelectedIndex();
+                JMenu tempMenu=mainMenu.getMenu(0);
+                if(tabNumber>-1)
+                {
+                Plotno tempCanvas=(Plotno)diagramy.get(tabNumber).panel.getComponent(1);
+                tempCanvas.setCurrentDiagram(diagramy.get(tabNumber));
+                String temp=diagramy.get(tabNumber).getType();
+                //temp=temp.toLowerCase();
+                initializeDiagramPM(diagramy.get(tabNumber));
+                if(temp.equalsIgnoreCase("database"))
+                {
                     initializeDBMenu();
                 }
-                
-                if(temp.equals("case")) {
+                if(temp.equalsIgnoreCase("case"))
+                {
                     initializeCaseDiagramMenu();
                 }
-                
-                if(temp.equals("class")) {
+                if(temp.equalsIgnoreCase("class"))
+                {
                     initializeClassMenu();
+                }
+
+                if(diagramy.get(tabNumber).isProjectWasSaved()) tempMenu.getItem(2).setEnabled(true);
+                else tempMenu.getItem(2).setEnabled(false);
+                tempMenu.getItem(3).setEnabled(true);
+                tempMenu.getItem(4).setEnabled(true);
+                }
+                else
+                {
+                tempMenu.getItem(2).setEnabled(false);
+                tempMenu.getItem(3).setEnabled(false);
+                tempMenu.getItem(4).setEnabled(false);
                 }
             }
         };
@@ -190,9 +214,12 @@ class MainWindow extends JFrame {
         // reszta konfiguracj menu głównego
         JMenuItem loadProject = new JMenuItem("Wczytaj projekt");
         JMenuItem saveProject = new JMenuItem("Zapisz projekt");
+        JMenuItem saveAsProject = new JMenuItem("Zapisz projekt jako ...");
         JMenuItem CloseProject = new JMenuItem("Zamknij projekt");
         JMenuItem CloseProgram = new JMenuItem("Zamknij program");
-
+        saveProject.setEnabled(false);
+        saveAsProject.setEnabled(false);
+        CloseProject.setEnabled(false);
         JMenu menuProjekt = new JMenu("Projekt");
         JMenu menuElementy = new JMenu("Elementy");
         menuElementy.setVisible(false);
@@ -203,6 +230,7 @@ class MainWindow extends JFrame {
         menuProjekt.add(createProjectMenu);
         menuProjekt.add(loadProject);
         menuProjekt.add(saveProject);
+        menuProjekt.add(saveAsProject);
         menuProjekt.add(CloseProject);
         menuProjekt.add(CloseProgram);
         menuProjekt.add(menuProjekt);
@@ -210,7 +238,156 @@ class MainWindow extends JFrame {
         mainMenu.add(menuElementy);
         //initializeCaseDiagramMenu();
     
+            
+    CloseProgram.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(diagramy.size()>0)
+                {
+                    if(JOptionPane.showConfirmDialog(rootPane, "Obecnie otwarte jest kilka projektów, czy na pewno chcesz zamknąć program ?", "Ostrzeżenie", 1)==0)
+                            dispose();
+                }
+                else dispose();
+            }
+        });
+    
+    saveAsProject.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                int tabNumber=zakladki.getSelectedIndex();
+                JFileChooser chooseFileDialog=new JFileChooser();
+                filesFilter=new FileFilter() {
+
+                    @Override
+                    public boolean accept(File f) {
+                        return f.getName().endsWith(projectFileExtension);
+                    }
+
+                    @Override
+                    public String getDescription() {
+                       return "Plik projektu programu CaseTool (*."+projectFileExtension+")";
+                    }
+                };
+
+               chooseFileDialog.setFileFilter(filesFilter);
+               chooseFileDialog.showSaveDialog(mainMenu);
+               File file=chooseFileDialog.getSelectedFile();
+               diagramy.get(tabNumber).setName(file.getName());
+               saveProject(chooseFileDialog.getSelectedFile().getPath()+"."+projectFileExtension);
+                
+            }
+        });
+    
+    saveProject.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                int tabNumber=zakladki.getSelectedIndex();
+               
+                saveProject(diagramy.get(tabNumber).getSource());
+            }
+        });
+    
+    loadProject.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser=new JFileChooser();
+                
+                
+                    filesFilter=new FileFilter() {
+
+                    @Override
+                    public boolean accept(File f) {
+                        return f.getName().endsWith(projectFileExtension);
+                    }
+
+                    @Override
+                    public String getDescription() {
+                       return "Plik projektu programu CaseTool (*."+projectFileExtension+")";
+                    }
+                };
+                    
+                fileChooser.setFileFilter(filesFilter);
+                fileChooser.showOpenDialog(mainMenu);
+                File file=fileChooser.getSelectedFile();
+                DocumentBuilderFactory XMLfactory=DocumentBuilderFactory.newInstance();
+                try
+                {
+                    DocumentBuilder documentBuilder=XMLfactory.newDocumentBuilder();
+                    Document XMLdocument=documentBuilder.parse(file);
+                    org.w3c.dom.Element XMLroot=XMLdocument.getDocumentElement();
+                    String type=XMLroot.getAttribute("type");
+                    if(type.equalsIgnoreCase("database")) createDBDiagram(file.getName(),XMLroot);
+                    if(type.equalsIgnoreCase("class")) createClassDiagram(file.getName(),XMLroot);
+                    if(type.equalsIgnoreCase("case")) createCaseDiagram(file.getName(),XMLroot);
+                    diagramy.get(diagramy.size()-1).setSource(file.getPath());
+                    JMenu tempMenu=mainMenu.getMenu(0);
+                    tempMenu.getItem(2).setEnabled(true);
+                }
+                catch(Exception ex)
+                {
+                    JOptionPane.showMessageDialog(fileChooser, "Projekt "+file.getName()+" jest uszkodzony");
+                }
+            }
+        });
+    
+    CloseProject.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                int tabNumber=zakladki.getSelectedIndex();
+                if(JOptionPane.showConfirmDialog(rootPane, "Czy na pewno chcesz zamknąć projekt "+zakladki.getSelectedComponent().getName()+" ?","Ostrzeżenie", 1)==0)
+                {
+                diagramy.remove(tabNumber);
+                zakladki.remove(tabNumber);
+                }
+            }
+        });
+
     }
+
+    public void createDBDiagram(String title, org.w3c.dom.Element XMLroot)
+{
+    if(title==null) title="Diagram bazy danych "+diagramy.size()+1;
+    initializeDBMenu();
+    Diagram temp;
+    if(XMLroot==null) temp=new DBDiagram();
+    else temp=new DBDiagram(XMLroot);
+    setTabLayout(temp.panel);
+    //temp.setName(title);
+    diagramy.add(temp);
+    zakladki.add(title,diagramy.get(diagramy.size()-1).panel);
+    zakladki.setSelectedIndex(zakladki.getTabCount()-1);
+    initializeDiagramPM(temp);
+}
+
+public void createClassDiagram(String title, org.w3c.dom.Element XMLroot)
+{
+    if(title==null) title="Diagram bazy danych "+diagramy.size()+1;
+    initializeClassMenu();
+    Diagram temp;
+    if(XMLroot==null) temp=new ClassDiagram();
+    else temp=new ClassDiagram(XMLroot);
+    setTabLayout(temp.panel);
+    //temp.setName(title);
+    diagramy.add(temp);
+    zakladki.add(title,diagramy.get(diagramy.size()-1).panel);
+    zakladki.setSelectedIndex(zakladki.getTabCount()-1);
+    initializeDiagramPM(temp);
+}
+
+public void createCaseDiagram(String title, org.w3c.dom.Element XMLroot)
+{
+    if(title==null) title="Diagram bazy danych "+diagramy.size()+1;
+    initializeCaseDiagramMenu();
+
+    Diagram temp;
+    if(XMLroot==null) temp=new CaseDiagram();
+    else temp=new CaseDiagram(XMLroot);
+    setTabLayout(temp.panel);
+    //temp.setName(title);
+    diagramy.add(temp);
+    zakladki.add("Diagram przypadków "+diagramy.size(),diagramy.get(diagramy.size()-1).panel);
+    zakladki.setSelectedIndex(zakladki.getTabCount()-1);
+    initializeDiagramPM(temp);
+}
 
     //-------------------------------------------------------------------------- ustawienie drzewa elementów i plótna
     public void setTabLayout(JPanel panel) {
@@ -228,6 +405,26 @@ class MainWindow extends JFrame {
         panel.add(tempCanvas);
         
     }
+
+    public void saveProject(String path)
+{
+    int tabNumber=zakladki.getSelectedIndex();
+    File file=new File(path);
+    try
+    {
+    FileWriter stream=new FileWriter(file);
+    stream.write(diagramy.get(tabNumber).toXML());
+    stream.close();
+    diagramy.get(tabNumber).setSource(file.getPath());
+    zakladki.getSelectedComponent().setName(path);
+    JMenu tempMenu=mainMenu.getMenu(0);
+    tempMenu.getItem(2).setEnabled(true);
+    }
+    catch(Exception ex)
+    {
+        JOptionPane.showMessageDialog(rootPane, "Nie można zapisać projektu");
+    }
+}
 
     //-------------------------------------------------------------------------- ustaw drzewo elementów dla diagramu
     public void initializeDiagramPM(Diagram diagram) {
@@ -437,9 +634,10 @@ class Plotno extends JPanel {
     private int movedElement = -1;
     private int currentElement = -1;
     private  JPopupMenu contextMenu=new JPopupMenu();
-             JMenuItem modifyElement=new JMenuItem("Modyfikuj element");
-             JMenuItem deleteElement=new JMenuItem("Usuń element");
-             JMenuItem setAutolocated=new JMenuItem("Ustaw pozycję automatycznie");
+    private JMenuItem modifyElement=new JMenuItem("Modyfikuj element");
+    private JMenuItem deleteElement=new JMenuItem("Usuń element");
+    private JMenuItem setAutolocated=new JMenuItem("Ustaw pozycję automatycznie");
+    private JMenuItem changeDisplayMode=new JMenuItem("Zwiń / Rozwiń element");
    
     //-------------------------------------------------------------------------- konstruktor główny         
     public Plotno() {
@@ -448,7 +646,8 @@ class Plotno extends JPanel {
         contextMenu.add(modifyElement);
         contextMenu.add(deleteElement);
         contextMenu.add(setAutolocated);
-        
+        contextMenu.add(setAutolocated);
+        contextMenu.add(changeDisplayMode);
         // oraz dodaj zdarzenia kliknięcia dla nich
         modifyElement.addActionListener(new ActionListener() {
             
@@ -486,6 +685,14 @@ class Plotno extends JPanel {
                 
             }
             
+        });
+
+        changeDisplayMode.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                Vector<Element> elements=currentDiagram.getMousableElements();
+                elements.get(currentElement).changeDisplayMode();
+            }
         });
         
         // listener MouseMotionListener płótna
