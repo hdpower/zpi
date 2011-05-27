@@ -121,7 +121,10 @@ class Class extends Element {
         this.color = color;
     }
 
-    public void changeDisplayMode() { }
+    public void changeDisplayMode() { 
+        if(displayMode==0) displayMode=1;
+        else displayMode=0;
+    }
 
     public class ClassAtribute {
         
@@ -318,58 +321,60 @@ class Class extends Element {
         int height=getHeight();
         
         if(visible) {
-            
-            ct.setColor(Color.WHITE);
+                        
             Color d = new Color(color.getRed() ,color.getGreen() , color.getBlue(), 60);
-            ct.fillRect(x, fontSize+margin*2, width, height);
-            ct.setColor(Color.BLACK);
-            
-            for(int i=0;i<fields.size();i++) {
-                String widocznosc_ustawiona = fields.get(i).getWidocznosc();
-                String widocznosc_wyswietl = "";
-                if(widocznosc_ustawiona.equals("private")) widocznosc_wyswietl = " - ";
-                else if(widocznosc_ustawiona.equals("protected")) widocznosc_wyswietl = " # ";
-                else if(widocznosc_ustawiona.equals("public")) widocznosc_wyswietl = " + ";
-                else widocznosc_wyswietl = " ? ";
-                
-                String poczatkowa = fields.get(i).getPoczatkowa();
-                String poczatkowa_wyswietl = "";
-                if(!poczatkowa.isEmpty()) {
-                    poczatkowa_wyswietl = " = " + poczatkowa;
+            if(displayMode == 1) {
+                ct.setColor(Color.WHITE);
+                ct.fillRect(x, fontSize+margin*2, width, height);
+                ct.setColor(Color.BLACK);
+
+                for(int i=0;i<fields.size();i++) {
+                    String widocznosc_ustawiona = fields.get(i).getWidocznosc();
+                    String widocznosc_wyswietl = "";
+                    if(widocznosc_ustawiona.equals("private")) widocznosc_wyswietl = " - ";
+                    else if(widocznosc_ustawiona.equals("protected")) widocznosc_wyswietl = " # ";
+                    else if(widocznosc_ustawiona.equals("public")) widocznosc_wyswietl = " + ";
+                    else widocznosc_wyswietl = " ? ";
+
+                    String poczatkowa = fields.get(i).getPoczatkowa();
+                    String poczatkowa_wyswietl = "";
+                    if(!poczatkowa.isEmpty()) {
+                        poczatkowa_wyswietl = " = " + poczatkowa;
+                    }
+
+                    label = widocznosc_wyswietl + fields.get(i).getNazwa() + " : " + fields.get(i).getTyp() + poczatkowa_wyswietl;
+                    ct.drawString(label, x+margin, y+(2*fontSize)+(3*margin)+((fontSize+margin)*i));
                 }
 
-                label = widocznosc_wyswietl + fields.get(i).getNazwa() + " : " + fields.get(i).getTyp() + poczatkowa_wyswietl;
-                ct.drawString(label, x+margin, y+(2*fontSize)+(3*margin)+((fontSize+margin)*i));
-            }
-            
-            if(fields.size() > 0 && methods.size() > 0) {
-                ct.setColor(d);
-                ct.drawLine(x, y+(2*fontSize)+(3*margin)+((fontSize+margin) * (fields.size()-1)) + 5, x + width, y+(2*fontSize)+(3*margin)+((fontSize+margin) * (fields.size()-1)) + 5);
-            }
-            
-            for(int i=0; i < methods.size(); i++) {
-                
-                ct.setColor(Color.BLACK);
-                String widocznosc_ustawiona = methods.get(i).getWidocznosc();
-                String widocznosc_wyswietl  = "";
-                if(widocznosc_ustawiona.equals("private")) widocznosc_wyswietl = " - ";
-                else if(widocznosc_ustawiona.equals("protected")) widocznosc_wyswietl = " # ";
-                else if(widocznosc_ustawiona.equals("public")) widocznosc_wyswietl = " + ";
-                else widocznosc_wyswietl = " ? ";
-                
-                String parametry = "( )";
-                if(methods.get(i).getParametry().size() > 0) {
-                    parametry = "( ... )";
+                if(fields.size() > 0 && methods.size() > 0) {
+                    ct.setColor(d);
+                    ct.drawLine(x, y+(2*fontSize)+(3*margin)+((fontSize+margin) * (fields.size()-1)) + 5, x + width, y+(2*fontSize)+(3*margin)+((fontSize+margin) * (fields.size()-1)) + 5);
                 }
-                
-                label = widocznosc_wyswietl + methods.get(i).getNazwa() + parametry + " : " + methods.get(i).getTyp();
-                ct.drawString(label, x + margin, y+(2*fontSize)+(3*margin)+((fontSize+margin) * i) + ((fontSize+margin) * (fields.size()-1)) + 20);
+
+                for(int i=0; i < methods.size(); i++) {
+
+                    ct.setColor(Color.BLACK);
+                    String widocznosc_ustawiona = methods.get(i).getWidocznosc();
+                    String widocznosc_wyswietl  = "";
+                    if(widocznosc_ustawiona.equals("private")) widocznosc_wyswietl = " - ";
+                    else if(widocznosc_ustawiona.equals("protected")) widocznosc_wyswietl = " # ";
+                    else if(widocznosc_ustawiona.equals("public")) widocznosc_wyswietl = " + ";
+                    else widocznosc_wyswietl = " ? ";
+
+                    String parametry = "( )";
+                    if(methods.get(i).getParametry().size() > 0) {
+                        parametry = "( ... )";
+                    }
+
+                    label = widocznosc_wyswietl + methods.get(i).getNazwa() + parametry + " : " + methods.get(i).getTyp();
+                    ct.drawString(label, x + margin, y+(2*fontSize)+(3*margin)+((fontSize+margin) * i) + ((fontSize+margin) * (fields.size()-1)) + 20);
+                }
             }
             
             ct.setColor(d);
             ct.fillRect(x, y, width,fontSize+margin*2 );
 
-            ct.drawRect(x, y, width, height+5);
+            if(displayMode==1) ct.drawRect(x, y, width, height+5);
             ct.setColor(Color.BLACK);
             ct.drawString(name,x+margin,y+margin+fontSize);
         }
