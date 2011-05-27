@@ -167,7 +167,8 @@ public class functionProperties extends JDialog{
             public void actionPerformed(ActionEvent e) {
                int tmp =  ParamTable.getSelectedRow();
                 tablemodel.removeRow( ParamTable.getSelectedRow());
-                for(int i=tmp;i<licznik-1;i++)                                  //for to change numbers describing row 
+                licznik--;
+                for(int i=tmp;i<licznik;i++)                                  //for to change numbers describing row 
                     tablemodel.setValueAt(i+1, i, 0);
             }
         });

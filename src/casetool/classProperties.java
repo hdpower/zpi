@@ -624,7 +624,7 @@ public class classProperties extends JDialog {
                 classMethodsContainer.editCellAt(-1, -1);
                 
                 if(className.getText().isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Podaj nazwę klasy!", "BŁĄD!!!", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Podaj nazwę klasy!\nNie ładnie.", "BŁĄD!!!", JOptionPane.ERROR_MESSAGE);
                     isCorrect = false;
                 }
                 
