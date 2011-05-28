@@ -100,6 +100,18 @@ public class ClassDiagram extends Diagram
         for(Element element : classes)
             classNode.add(new DefaultMutableTreeNode(element));
     }
+    
+    public String toXML() {
+        
+        String XML = "";
+        
+        XML += "<diagram type='" + getType() + "'>\n";
+        for(int i=0;i<classes.size();i++)
+            XML += classes.get(i).toXML();
+        XML += "</diagram>\n";
+        
+        return XML;
+    } 
 }
 
 class Class extends Element {
@@ -155,6 +167,21 @@ class Class extends Element {
         public String getWidocznosc()   { return this.widocznosc; }
         public String getLiczebnosc()   { return this.liczebnosc; }
         public String getPoczatkowa()   { return this.wartoscPoczatkowa; }  
+        
+        public String toXML() {
+            
+            String XML = "";
+            
+            XML += "<field>\n";
+            XML += "  <name>" + nazwa + "</name>\n";
+            XML += "  <type>" + typ + "</type>\n";
+            XML += "  <visibility>" + widocznosc + "</visibility>\n";
+            XML += "  <count>" + liczebnosc + "</count>\n";
+            XML += "  <startValue>" + wartoscPoczatkowa + "</startValue>\n";
+            XML += "</field>\n";
+            
+            return XML;
+        }
         
     }
     
@@ -217,6 +244,19 @@ class Class extends Element {
             public String getNazwa()        { return this.nazwaP; }
             public String getTyp()          { return this.typP;   }
             public String getPrzekazywanie()   { return this.przekazywanie; }
+            
+            public String toXML() {
+                
+                String XML = "";
+                
+                XML += "<parameter>\n";
+                XML += "  <name>" + nazwaP + "</name>\n";
+                XML += "  <type>" + typP + "</type>\n";
+                XML += "  <send>" + przekazywanie + "</send>\n";
+                XML += "</parameter>\n";
+                
+                return XML;
+            }
 
         }
         
@@ -234,6 +274,24 @@ class Class extends Element {
         public String getWidocznosc()     { return this.widocznosc; }
         public boolean getPolimorfizm()   { return this.polimorfizm; } 
         public Vector<Parametr> getParametry() { return this.parametry; }
+        
+        public String toXML() {
+            
+            String XML = "";
+            
+            XML += "<method>\n";
+            XML += "  <name>" + nazwa + "</name>\n";
+            XML += "  <type>" + typ + "</type>\n";
+            XML += "  <visibility>" + widocznosc + "</visibility>\n";
+            XML += "  <isPolimorf>" + polimorfizm + "</isPolimorf>\n";
+            XML += "  <parameters>\n";
+            for(int i=0; i<parametry.size(); i++) 
+                XML += parametry.get(i).toXML();
+            XML += "  </parameters>\n";
+            XML += "</method>\n";            
+            
+            return XML;
+        }
     }
     
     public void dodajMetode(String n, String t, String w, boolean p) {
@@ -309,7 +367,34 @@ class Class extends Element {
 
     @Override
     public String toXML() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
+        String XML = "";
+        
+        XML += "<class>\n";
+        XML += "  <name>" + name + "</name>\n";
+        XML += "  <color>" + color.getRGB() + "</color>\n";
+        XML += "  <x>" + x + "</x>\n";
+        XML += "  <y>" + y + "</y>\n";
+        XML += "  <isAutoLocated>" + autoLocated + "</isAutoLocated>\n";
+        XML += "  <displayMode>" + displayMode + "</displayMode>\n";
+        XML += "  <visibility>" + visibility + "</visibility>\n";
+        XML += "  <documentation>" + documentation + "</documentation>\n";
+        XML += "  <isAbstract>" + isAbstract + "</isAbstract>\n";
+        XML += "  <isStatic>" + isStatic + "</isStatic>\n";
+        //Atrybuty
+        XML += "  <fields>\n";
+        for(int i=0; i<fields.size(); i++)
+            XML += fields.get(i).toXML();
+        XML += "  </fields>\n";
+        //Metody
+        XML += "  <methods>\n";
+        for(int i=0; i<methods.size(); i++)
+            XML += methods.get(i).toXML();
+        XML += "  </methods>\n";
+        
+        XML += "</class>\n";
+        
+        return XML;
     }
 
     @Override
