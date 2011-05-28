@@ -14,6 +14,8 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.xml.soap.Node;
+import org.w3c.dom.NodeList;
 
 public class ClassDiagram extends Diagram
 {
@@ -42,10 +44,57 @@ public class ClassDiagram extends Diagram
     public ClassDiagram(org.w3c.dom.Element XMLroot)
     {
         this();
+        NodeList tablesXML=XMLroot.getChildNodes();
+        for(int i=0; i<tablesXML.getLength(); i++) {
+            
+            if(tablesXML.item(i) instanceof org.w3c.dom.Element) {
+                addClass(tablesXML.item(i));
+            }
+        }
+        
+        RefreshClasses();
+    }
+    
+    private void RefreshClasses() {
+        refreshTables();
     }
 
     public ClassDiagram getInstance() {
         return this;
+    }
+    
+    private void addClass(org.w3c.dom.Node XMLtable) {
+        
+        NodeList tableAttributesXML=XMLtable.getChildNodes();
+        String tempName="READ_ERROR";
+        Color tempColor=Color.GREEN;
+        int tempX=5, tempY=5, tempDisplayMode=1;
+        NodeList fieldsTemp=null;
+        Boolean tempIAL=true;
+        for(int i=0;i<tableAttributesXML.getLength();i++)
+            if(tableAttributesXML.item(i) instanceof org.w3c.dom.Element)
+            {
+                String propety=tableAttributesXML.item(i).getNodeName();
+                String value=tableAttributesXML.item(i).getTextContent();
+                if(propety.equals("name")) tempName=value;
+                try
+                {
+                if(propety.equals("color")) tempColor=new Color(Integer.parseInt(value));
+                if(propety.equals("x")) tempX=Integer.parseInt(value);
+                if(propety.equals("y")) tempY=Integer.parseInt(value);
+                if(propety.equals("displayMode")) tempDisplayMode=Integer.parseInt(value);
+                if(propety.equals("isAutoLocated")) tempIAL=Boolean.valueOf(value);
+                if(propety.equals("fields")) fieldsTemp=tableAttributesXML.item(i).getChildNodes();
+                }
+                catch(Exception ex) { }
+            }
+        Class tempClass = new Class(tempName, tempColor);
+        //if (fieldsTemp!=null) tempClass.addFields(fieldsTemp);
+        tempClass.setX(tempX);
+        tempClass.setY(tempY);
+        tempClass.setDisplayMode(tempDisplayMode);
+        tempClass.autoLocated=tempIAL;
+        classes.add(tempClass);
     }
 
     public void setContextMenuOptions(DefaultMutableTreeNode selectedNode, JPopupMenu contextMenu) { 
@@ -111,7 +160,8 @@ public class ClassDiagram extends Diagram
         XML += "</diagram>\n";
         
         return XML;
-    } 
+    }
+
 }
 
 class Class extends Element {
