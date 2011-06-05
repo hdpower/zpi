@@ -228,7 +228,7 @@ public class CaseDiagram extends Diagram {
             elements.add(new UseCase(randomPoint(), wynA, wynB));
         }
                 
-        //mw.tempCanvas.repaint();
+        mw.tempCanvas.repaint();
     }
     
     //-------------------------------------------------------------------------- dodaj nowy Link(prosty,inherit,include,extend)

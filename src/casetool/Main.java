@@ -92,7 +92,7 @@ class MainWindow extends JFrame {
         content.add(zakladki);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(this.szerokoscEkranu, this.wysokoscEkranu);
-//        setResizable(false);
+        setResizable(false);
         setTitle("CaseTool 1.0");
     
         // jeżeli wykryte zostanie zdarzenie przełączenia zkładki to
@@ -104,7 +104,7 @@ class MainWindow extends JFrame {
                 JMenu tempMenu=mainMenu.getMenu(0);
                 if(tabNumber>-1)
                 {
-                Plotno tempCanvas=(Plotno)diagramy.get(tabNumber).panel.getComponent(1);
+                tempCanvas=(Plotno)diagramy.get(tabNumber).panel.getComponent(1);
                 tempCanvas.setCurrentDiagram(diagramy.get(tabNumber));
                 String temp=diagramy.get(tabNumber).getType();
                 //temp=temp.toLowerCase();
