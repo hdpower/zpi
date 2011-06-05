@@ -1,6 +1,5 @@
 package casetool.usecase;
 
-import java.awt.Point;
 
 /**
  *

@@ -5,7 +5,6 @@ import casetool.CaseDiagram;
 import casetool.Diagram;
 import casetool.Element;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.util.Vector;
 import javax.swing.*;
 

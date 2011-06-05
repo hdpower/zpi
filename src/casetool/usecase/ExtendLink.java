@@ -3,7 +3,6 @@ package casetool.usecase;
 import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 
 /**
  *
@@ -43,7 +42,7 @@ public class ExtendLink extends Link {
         
         ga.drawLine(from.getX()+4, from.getY()+4, to.getX()+4, to.getY()+4);
         ga.drawString(str, ((to.getX()-from.getX())/2)+from.getX(), ((to.getY()-from.getY())/2)+from.getY());
+        
     }
-
 
 }

@@ -4,7 +4,6 @@ import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import javax.swing.*;
 
 /*
  *  Klasa opowiadająca za rysowanie i zachowanie elementu Actor
@@ -44,18 +43,23 @@ public class Actor extends UseCaseElement {
         ga.drawLine(x + 50, y + 55,x + 70, y + 80);
         ga.drawString(strA, x + 5, y + 95);
         ga.drawString(strB, x + 5, y + 110);
+        
     }
     
     //-------------------------------------------------------------------------- pobierz szerokość
     @Override
     public int getWidth() {
+        
         return 100;
+        
     }
     
     //-------------------------------------------------------------------------- pobierz wysokość
     @Override
     public int getHeight() {
+        
         return 130;
+        
     }
         
 }
