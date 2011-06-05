@@ -10,11 +10,9 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -34,124 +32,88 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author ramyi
  */
-public class functionProperties extends JDialog{
-    
-   private Container content;
-   private DBDiagram dbdiagram;
-   private JPanel MainPanel;
-   private JPanel ParamPanel;
-   private JTable ParamTable;
-   private DefaultTableModel tablemodel;
-   private JScrollPane scrolpane;
-   private JComboBox typesList;
-   private JComboBox InOutList;
-   private String[] typesTab={"INT","DOUBLE","VARCHAR","VARCHAR2","CHAR","DATE","TIMESTAMP"};
-   private String[] InOutTab={"In","Out","In Out"};
-   private JTabbedPane tabs;
-   private HashMap<String,String> rdyFun;
-   private Tab t;
-   private int licznik=0;
-   String readParams="";                                                        // w tej zmiennej beda paramtetry w formie ostatecznej
-   
-   
-    public functionProperties(DBDiagram value)
-    {
-        content = getContentPane();
-        setTitle("Nowa Funkcja");
-        setSize(500, 650);
-        setVisible(true);
+public class procedurePropertis extends JDialog{
+    private Container content;
+    private JPanel MainPanel;
+    private JPanel ParamPanel;
+    private JTable ParamTable;
+    private DefaultTableModel tablemodel;
+    private JScrollPane scrolpane;
+    private JComboBox typesList;
+    private JComboBox InOutList;
+    private String[] typesTab={"INT","DOUBLE","VARCHAR","VARCHAR2","CHAR","DATE","TIMESTAMP"};
+    private String[] InOutTab={"In","Out","In Out"};
+    private Tab t;
+    private JTabbedPane tabs;
+    private int licznik=0;
+    String readParams="";  
+
+    public procedurePropertis() {
         
+        content = getContentPane();
+        setSize(500,650);
+        setTitle("Nowa Funkcja");
+         setVisible(true);
         typesList = new JComboBox(typesTab);
-        InOutList = new JComboBox(InOutTab);
-        rdyFun = new HashMap<String, String>();
-        dbdiagram = value;
-        t = new Tab();
-        tabs = t.addTabs("Fukcja","Parametry");
+        InOutList = new JComboBox(InOutTab); 
+        t=new Tab();
+        tabs = t.addTabs("Procedura","Parametry");
+       
     }
-    public void showFun()
-    {
     
-    }
     public void ShowPanel()
-    {                                                   
-       MainPanel = new JPanel(new GridBagLayout());                             //MainPanel section obj declaration + addition to panel
-                
-                JLabel fun_name_lab = new JLabel("Podaj nazwę funkcji");
-                
-        final   JTextField fun_name = new JTextField();
-                           fun_name.setPreferredSize(new Dimension(100, 28));           
-                           
-        final   JLabel paramLabel = new JLabel("( )");
-        final   JTextArea fun_body = new JTextArea();
+    {
+        MainPanel = new JPanel(new GridBagLayout());
+        JTextField proc_name = new JTextField();
+        
+        JLabel params_label = new JLabel("( )");
+        
+        final   JTextArea proc_body = new JTextArea();
                          
                 JScrollPane textScroll_begin = new JScrollPane();
-                            textScroll_begin.setViewportView(fun_body);  
+                            textScroll_begin.setViewportView(proc_body);  
                             textScroll_begin.setPreferredSize(new Dimension(460,200));
         
-       final    JTextArea declare_body = new JTextArea(); 
+        final   JTextArea declare_body = new JTextArea(); 
        
                 JScrollPane textScroll_declare = new JScrollPane();
                             textScroll_declare.setViewportView(declare_body);
                             textScroll_declare.setPreferredSize(new Dimension(460,100));
-                        
-                JButton finish = new JButton("Dodaj funkcję");  
-                finish.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-               if(fun_name.getText().isEmpty()==false)
-               {
-                   rdyFun.put(fun_name.getText(), "CREATE OR REPLACE FUNCTION "+ fun_name.getText() + readParams +
-                                   "\n RETURN "+typesList.getSelectedItem() +
-                                   "\n"+declare_body.getText()+
-                                   "\n\u0009 BEGIN" +
-                                   "\n\u0009\u0009 "+fun_body.getText().replace("\n", "\n\u0009\u0009")+
-                                   "\n\u0009 END "+ fun_name.getText() +";");
-                   System.out.println("CREATE OR REPLACE FUNCTION "+ fun_name.getText() + readParams +
-                                   "\n RETURN "+typesList.getSelectedItem() +
-                                   "\n"+declare_body.getText()+
-                                   "\n\u0009 BEGIN" +
-                                   "\n\u0009\u0009 "+fun_body.getText().replace("\n", "\n\u0009\u0009")+
-                                   "\n\u0009 END "+ fun_name.getText() +";");
-                   dbdiagram.addChildToNode(fun_name.getText());
-                   setVisible(false);
-               }
-               else
-               {
-                   JOptionPane.showMessageDialog(MainPanel, "Funkcja musi mieć nazwę!");
-               }
-            }
-        });
-        GridBagConstraints c = new GridBagConstraints();
+        
+        GridBagConstraints c = new GridBagConstraints();                        //do rozmieszczania w gridbag potrzebne
         c.fill = GridBagConstraints.HORIZONTAL;
+        
         MainPanel.setSize(new Dimension(500, 600));
+        
         c.gridx=0;c.gridy=0;c.insets = new Insets(10,0,0,0);
-        MainPanel.add(fun_name_lab,c);
-        c.gridx=1;c.gridy=0;c.insets = new Insets(10,10,0,0);
-        MainPanel.add(fun_name,c);
-        c.gridx=2;c.gridy=0;c.insets = new Insets(10,10,0,0);
-        MainPanel.add(new JLabel("Parametry: "),c);
-        c.gridx=3;c.gridy=0;c.insets = new Insets(10,0,0,0);
-        MainPanel.add(paramLabel,c);
-        c.gridx=0;c.gridy=1;
-        MainPanel.add(new JLabel(" RETURN "),c);
+        MainPanel.add(new JLabel("CREATE OR "),c);
+        c.gridx=1;c.gridy=0;c.insets = new Insets(10,0,0,0);
+        MainPanel.add(new JLabel("REPLACE PROCEDURE "),c);
+        c.gridx=0;c.gridy=1;c.insets = new Insets(10,0,0,0);
+        MainPanel.add(proc_name,c);
         c.gridx=1;c.gridy=1;
-        MainPanel.add(typesList,c);
-        c.gridx=0;c.gridy=2;c.weightx=0.0;
+        MainPanel.add(new JLabel("Parametry: "),c);
+        c.gridx=2;c.gridy=1;
+        MainPanel.add(params_label,c);
+        c.gridx=3;c.gridy=1;
+        MainPanel.add(new JLabel("IS"),c);
+        c.gridx=0;c.gridy=2;
         MainPanel.add(new JLabel("DECLARE"),c);
         c.gridx=0;c.gridy=3;c.gridwidth=4;
-        MainPanel.add(textScroll_declare,c);c.gridx=0;c.gridy=4;c.weightx=0.0;
-        MainPanel.add(new JLabel("Begin"),c);
+        MainPanel.add(declare_body,c);
+        c.gridx=0;c.gridy=4;
+        MainPanel.add(new JLabel("BEGIN"),c);
         c.gridx=0;c.gridy=5;c.gridwidth=4;
-        MainPanel.add(textScroll_begin,c);
+        MainPanel.add(proc_body,c);
         c.gridx=0;c.gridy=6;
-        MainPanel.add(new JLabel("END "),c);
-        c.gridx=0;c.gridy=7;   
-        MainPanel.add(finish,c);   
+        MainPanel.add(new JLabel("END"),c);
+        c.gridx=0;c.gridy=7;
+        MainPanel.add(new JButton("akc"),c);
         t.addToMain(MainPanel);
-                                                                                //MainPanel section end
         
-                                                                                //ParamPanel section
+//------------------------------------------------------------------------------drugi panel        
         ParamPanel = new JPanel(new BorderLayout(20, 5));
+        
         Object columnNames[] = {"", "Nazwa","Jak","Typ","Rozmiar"};
         tablemodel=new DefaultTableModel(columnNames, 0)
                 {
@@ -175,7 +137,7 @@ public class functionProperties extends JDialog{
                        errorLabel.setOpaque(true);
                        errorLabel.setBackground(new Color(255, 0, 0,100));
                        errorLabel.setMaximumSize(new Dimension(300,100));
-        //----------------------------------------------------------------------error label end
+        
         JButton akcept = new JButton("Akceptuj");
         akcept.addActionListener(new ActionListener() {
            
@@ -203,7 +165,7 @@ public class functionProperties extends JDialog{
                 try
                 {
                     readParams="( "+readParams.substring( 0, readParams.length()-1)+" )";
-                    paramLabel.setText("( Dodałeś: "+ tablemodel.getRowCount() + " )");
+                   // paramLabel.setText("( Dodałeś: "+ tablemodel.getRowCount() + " )");
                 }
                 catch(StringIndexOutOfBoundsException strex)
                 {
@@ -220,6 +182,7 @@ public class functionProperties extends JDialog{
                 }
             }
         });
+        
         JButton addrow = new JButton("Dodaj parametr");
         addrow.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -229,6 +192,7 @@ public class functionProperties extends JDialog{
                 
             }
         });
+        
         JButton removerow = new JButton("Usuń parametr");
         removerow.addActionListener(new ActionListener() {
 
@@ -240,7 +204,7 @@ public class functionProperties extends JDialog{
                     tablemodel.setValueAt(i+1, i, 0);
             }
         });
-        //----------------------------------------------------------------------JButtons end
+        
         JPanel northP = new JPanel();
                northP.add(errorLabel);
         JPanel centerP = new JPanel();
@@ -252,18 +216,13 @@ public class functionProperties extends JDialog{
         JPanel southP = new JPanel();
                southP.add(akcept); 
         //----------------------------------------------------------------------additional panels for layout end
-//        ParamPanel.add(centerP,BorderLayout.CENTER); 
-//        ParamPanel.add(southP,BorderLayout.SOUTH);
-//        ParamPanel.add(eastP,BorderLayout.EAST);
-//        ParamPanel.add(northP,BorderLayout.NORTH) ;
+
         t.addToSecendary(centerP, BorderLayout.CENTER);
         t.addToSecendary(southP,BorderLayout.SOUTH);
         t.addToSecendary(eastP,BorderLayout.EAST);
         t.addToSecendary(northP,BorderLayout.NORTH) ;
-                                                                                 //add to JTabbedPane tabs
-        //tabs.addTab("Funkcja", MainPanel);
-        //tabs.addTab("Parametry", ParamPanel);
         
         content.add(tabs);
     }
+            
 }
