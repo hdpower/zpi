@@ -22,6 +22,7 @@ public class DBDiagram extends Diagram
 {
     public Vector<Element> tables=new Vector<Element>();
     DefaultMutableTreeNode tablesNode;
+    DefaultMutableTreeNode functionsNode;
     
 public DBDiagram getInstance()
 {
@@ -36,7 +37,7 @@ public DBDiagram()
 
     DefaultMutableTreeNode viewsNode=new DefaultMutableTreeNode("Perspektywy");
     DefaultMutableTreeNode triggersNode=new DefaultMutableTreeNode("Wyzwalacze");
-    DefaultMutableTreeNode functionsNode=new DefaultMutableTreeNode("Funkcje");
+    functionsNode=new DefaultMutableTreeNode("Funkcje");
     DefaultMutableTreeNode proceduresNode=new DefaultMutableTreeNode("Procedury");
     DefaultMutableTreeNode usersNode=new DefaultMutableTreeNode("Użytkownicy");
 
@@ -118,7 +119,7 @@ public void setContextMenuOptions(DefaultMutableTreeNode selectedNode, JPopupMen
         addFun.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    functionProperties fc = new functionProperties();
+                    functionProperties fc = new functionProperties(getInstance());
                     fc.ShowPanel();
                 }
             });        
@@ -137,6 +138,13 @@ public void setContextMenuOptions(DefaultMutableTreeNode selectedNode, JPopupMen
     else if(selectedNode.toString().equals("Procedury")) 
     {
         JMenuItem addProcedure = new JMenuItem("Dodaj Procedure");
+        addProcedure.addActionListener(new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                     procedurePropertis pp = new procedurePropertis();
+                     pp.ShowPanel();
+                }
+            });
         contextMenu.add(addProcedure);
     }
     else if(selectedNode.toString().equals("Użytkownicy")) 
@@ -256,6 +264,13 @@ public String toXML()
     XML+="</diagram>\n";
     return XML;
 }   
+
+public void addChildToNode(String name)
+{       
+        DefaultMutableTreeNode temp = new DefaultMutableTreeNode(name);
+        functionsNode.add(temp);
+}
+
 
 }
 
