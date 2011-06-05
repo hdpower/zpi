@@ -677,7 +677,7 @@ public class classProperties extends JDialog {
                         String nazwa = classMethodsContainer.getValueAt(i, 0).toString();
                         String typZw = classMethodsContainer.getValueAt(i, 1).toString();
                         String widoc = classMethodsContainer.getValueAt(i, 2).toString();
-                        boolean poli = false;//(boolean)classMethodsContainer.getValueAt(i, 3);
+                        boolean poli = (Boolean)classMethodsContainer.getValueAt(i, 3);
                         
                         Class klasa = new Class();
                         Class.ClassMethod metoda = klasa.new ClassMethod(nazwa, typZw, widoc, poli);                        
@@ -774,8 +774,8 @@ public class classProperties extends JDialog {
                 wiersz[1] = classData.getTyp(classData.getClassMethods().get(i));
                 wiersz[2] = classData.getWidocznosc(classData.getClassMethods().get(i));
                 wiersz[3] = classData.getPolimorfizm(classData.getClassMethods().get(i));
-                
                 classMethodsContainerModel.addRow(wiersz);
+                //System.out.println(wiersz[3]);
                 
                 Object columnNames[] = {"Nazwa parametru", "Typ parametru", "Typ przekazywania"};
                 

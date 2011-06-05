@@ -12,6 +12,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.EventObject;
 import java.util.HashMap;
@@ -19,6 +20,9 @@ import java.util.Map;
 import java.util.Vector;
 import javax.swing.*;
 import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.plaf.DimensionUIResource;
 import javax.swing.plaf.basic.BasicTreeUI.SelectionModelPropertyChangeHandler;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -37,10 +41,13 @@ public class tablePropeties extends JDialog
     HashMap<String,Color> colorsDictionary;
     HashMap<String,Boolean> visibleDictionary;
     Container content;
+    JTabbedPane zakladki;
     JPanel panel;
+    JPanel fieldsPanel;
     DefaultTableModel tableModel;
     JTable table;
     JTextField tableName;
+    JTextArea tableComment;
     JComboBox tableColor;
     JComboBox tableVisible;
     Object [] typesTab;
@@ -50,7 +57,6 @@ public class tablePropeties extends JDialog
 public void setTable(Table value)    
 {
     this.tableData=value;
-    System.out.println("Udalo sie");
 }
     
 public tablePropeties(DBDiagram value)
@@ -61,6 +67,11 @@ public tablePropeties(DBDiagram value)
     setSize(640,740);
     content=getContentPane();
     panel=new JPanel();
+    panel.setLayout(new FlowLayout());
+    fieldsPanel=new JPanel();
+    zakladki=new JTabbedPane();
+    zakladki.add("Tabela",panel);
+    zakladki.add("Kolumny",fieldsPanel);
     panel.setSize(600, 700);
     }
 
@@ -69,7 +80,10 @@ public void showWindow()
 
     JLabel tableNameLabel=new JLabel("Nazwa tabeli");
     tableName=new JTextField();
-    tableName.setPreferredSize(new Dimension(170,20));
+    tableName.setPreferredSize(new Dimension(600,30));
+    JLabel tableCommentLabel=new JLabel("Dokumentacja");
+    tableComment=new JTextArea();
+    tableComment.setPreferredSize(new Dimension(600,300));
     JLabel tableColorLabel=new JLabel("Kolor elementu na diagramie");
     colorsDictionary=new HashMap<String, Color>();
     colorsDictionary.put("Czarny", Color.black);
@@ -81,7 +95,7 @@ public void showWindow()
 
     //Color [] colors={Color.black, Color.GREEN, Color.BLUE, Color.RED, Color.gray, Color.yellow, Color.DARK_GRAY, Color.LIGHT_GRAY};
     tableColor=new JComboBox(colorsDictionary.keySet().toArray());
-    tableColor.setPreferredSize(new Dimension(170,20));
+    tableColor.setPreferredSize(new Dimension(600,30));
     //tableColor.setSelectedItem(Color.black);
     visibleDictionary=new HashMap<String, Boolean>();
     visibleDictionary.put("tak",true);
@@ -89,7 +103,7 @@ public void showWindow()
 
     JLabel tableVisibleLabel=new JLabel("Pokaż element");
     tableVisible=new JComboBox(visibleDictionary.keySet().toArray());
-    tableVisible.setPreferredSize(new Dimension(170,20));
+    tableVisible.setPreferredSize(new Dimension(600,30));
     
     JButton OK=new JButton("OK");
    
@@ -103,6 +117,7 @@ tableModel.addColumn("PRIMARY KEY");
     if(tableData!=null) 
             {
                 tableName.setText(tableData.toString());
+                tableComment.setText(tableData.getComment());
                 for(int i=0;i<tableData.fields.size();i++)
                    tableModel.addRow(new Object[]{tableData.fields.get(i).getName(),tableData.fields.get(i).getType(),tableData.fields.get(i).getNotNull(),tableData.fields.get(i).getUnique(),tableData.fields.get(i).getPrimaryKey()});
             }
@@ -212,9 +227,11 @@ deleteRow.addActionListener(new ActionListener() {
                 }
 
                     Table tempTable=new Table(tableName.getText(),colorsDictionary.get(tableColor.getSelectedItem()));
+                    tempTable.setComment(tableComment.getText());
 
                     for(int i=0;i<tableModel.getRowCount();i++)
                     {
+                        tempName=tempType="";
                         try
                         {
                         tempName=tableModel.getValueAt(i, 0).toString();
@@ -224,12 +241,22 @@ deleteRow.addActionListener(new ActionListener() {
                         tempPK=tableModel.getValueAt(i, 4).toString();
                         }
                         catch(Exception ex) { }
+                                                    System.out.println("Wiersz "+i+", nazwa: "+tempName+", wartosc: "+tempType);
                         if(!tempName.isEmpty() && !tempType.isEmpty())
                             tempTable.fields.add(new Field(tempName,tempType,tempNotNull,tempUnique,tempPK));
-                        else if(tempName.isEmpty() || tempType.isEmpty())
+                        else
                         {
-                            errorMessage.add("Podaj poprawnę nazwę i typ pola w wierszu nr. "+i+".\n");
+                        if(tempName.isEmpty() && tempType.isEmpty()) continue;
+                        if (tempName.isEmpty())
+                        {
+                            errorMessage.add("Podaj nazwę kolumny w wierszu nr. "+(i+1)+".\n");
                             isValid=false;
+                        }
+                        if (tempType.isEmpty())
+                        {
+                            errorMessage.add("Podaj typ kolumny w wierszu nr. "+(i+1)+".\n");
+                            isValid=false;
+                        }
                         }
 
                     }
@@ -252,25 +279,53 @@ deleteRow.addActionListener(new ActionListener() {
             }
         });
     Cancel.setPreferredSize(new Dimension(100,20));
+    Integer vMargin=600,hMargin=20;
+    Integer vMargin2=600,hMargin2=5;
+    panel.add(Box.createRigidArea(new Dimension(600,15)));
     panel.add(tableNameLabel);
+    panel.add(Box.createRigidArea(new Dimension(vMargin2,hMargin2)));
     panel.add(tableName);
+    panel.add(Box.createRigidArea(new Dimension(vMargin,hMargin)));
+    panel.add(tableCommentLabel);
+    panel.add(Box.createRigidArea(new Dimension(vMargin2,hMargin2)));
+    panel.add(tableComment);
+    panel.add(Box.createRigidArea(new Dimension(vMargin,hMargin)));
+    panel.add(tableColorLabel);
+    panel.add(Box.createRigidArea(new Dimension(vMargin2,hMargin2)));
+    panel.add(tableColor);
+    panel.add(Box.createRigidArea(new Dimension(600,100)));
+
     JScrollPane tableContainer=new JScrollPane(table);
     tableContainer.setPreferredSize(new Dimension(600,600));
-    panel.add(tableContainer);
-    panel.add(tableColorLabel);
-    panel.add(tableColor);
+    fieldsPanel.add(tableContainer);
     //panel.add(tableVisibleLabel);
     //panel.add(tableVisible);
-    JPanel buttonsPanel=new JPanel();
+    final JPanel buttonsPanel=new JPanel();
+    buttonsPanel.setLayout(new FlowLayout());
+    JPanel buttonsPanel2=new JPanel();
     buttonsPanel.setLayout(new FlowLayout());
     
-    buttonsPanel.add(addRow);
-    buttonsPanel.add(deleteRow);
-    buttonsPanel.add(Box.createRigidArea(new Dimension(180,20)));
+    buttonsPanel2.add(addRow);
+    buttonsPanel2.add(Box.createRigidArea(new Dimension(180,20)));
+    buttonsPanel2.add(deleteRow);
+    
     buttonsPanel.add(OK);
+    buttonsPanel.add(Box.createRigidArea(new Dimension(180,20)));
     buttonsPanel.add(Cancel);
     panel.add(buttonsPanel);
-    content.add(panel);
+    fieldsPanel.add(buttonsPanel2);
+    zakladki.addChangeListener(new ChangeListener() {
+
+            public void stateChanged(ChangeEvent e) {
+                int selectedTab;
+                selectedTab=zakladki.getSelectedIndex();
+                if(selectedTab==0) panel.add(buttonsPanel);
+                else fieldsPanel.add(buttonsPanel);
+            }
+        });
+
+    content.add(zakladki);
+    //content.add(buttonsPanel);
     setVisible(true);
     }
 }
