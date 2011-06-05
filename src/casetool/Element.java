@@ -62,6 +62,9 @@ public abstract class Element {
     
     public void setName(String name) { this.name = name; }                      // nazwa
     public String getName() { return name; }
+
+    public void setComment(String comment) { this.comment=comment; }
+    public String getComment() { return this.comment; }
     
     public void setColor(Color color) { this.color = color; }                   // kolor
     public Color getColor() {  return color;}
