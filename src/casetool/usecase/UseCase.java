@@ -7,18 +7,19 @@ import java.awt.Point;
 import javax.swing.*;
 
 /*
- *  Klasa opowiadająca za rysowanie i zachowanie elementu Actor
+ *  Klasa opowiadająca za rysowanie i zachowanie elementu UseCase
  * 
  */
 
 //------------------------------------------------------------------------------ klasa aktora ------------------------
-public class Actor extends UseCaseElement {
+public class UseCase extends UseCaseElement {
     
     //-------------------------------------------------------------------------- pola
-   
+
+    
     
     //-------------------------------------------------------------------------- konstruktor główny
-    public Actor(Point p, String pstrA, String pstrB) {
+    public UseCase(Point p, String pstrA, String pstrB) {
         
         strA = pstrA;
         strB = pstrB;
@@ -35,27 +36,22 @@ public class Actor extends UseCaseElement {
         ga.setStroke(new BasicStroke(stroke));
         ga.setColor(color);
                 
-        // budowanie Aktora
-        ga.drawOval(x + 40, y + 10, 20, 20);
-        ga.drawLine(x + 50, y + 30,x + 50, y + 55);
-        ga.drawLine(x + 50, y + 30,x + 30, y + 55);
-        ga.drawLine(x + 50, y + 30,x + 70, y + 55);
-        ga.drawLine(x + 50, y + 55,x + 30, y + 80);
-        ga.drawLine(x + 50, y + 55,x + 70, y + 80);
-        ga.drawString(strA, x + 5, y + 95);
-        ga.drawString(strB, x + 5, y + 110);
+        // budowanie UseCase
+        ga.drawOval(x, y, 200, 50);
+        ga.drawString(strA, x + 70, y + 20);
+        ga.drawString(strB, x + 70, y + 40);
     }
     
     //-------------------------------------------------------------------------- pobierz szerokość
     @Override
     public int getWidth() {
-        return 100;
+        return 200;
     }
     
     //-------------------------------------------------------------------------- pobierz wysokość
     @Override
     public int getHeight() {
-        return 130;
+        return 50;
     }
         
 }

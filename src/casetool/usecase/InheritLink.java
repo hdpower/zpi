@@ -33,6 +33,8 @@ public class InheritLink extends Link {
         ga.setStroke(new BasicStroke(stroke));
         
         ga.drawLine(from.getX()+4, from.getY()+4, to.getX()+4, to.getY()+4);
+        
+        // obliczanie kierunku
     }
 
 

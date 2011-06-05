@@ -9,6 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.Random;
 import java.util.Vector;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -43,11 +44,12 @@ public class Link extends Element {
         
         from = pfrom;
         to = pto;
+        
+        from.setLink(this);
+        to.setLink(this);
 
     }
-
-    public void changeDisplayMode() { }
-    
+   
     @Override
     public String toString() {
         return "";
@@ -85,6 +87,18 @@ public class Link extends Element {
         //diagramT.elements.remove((Link)element);
         
         System.out.println(" -> Ten element tam jest: " + diagramT.elements.contains(element));
+    }
+    
+    public void setAutolocated() {                
+        
+        JOptionPane.showMessageDialog(null, "Ta opcja jest nie aktywna");
+        
+    }
+    
+    public void changeDisplayMode() {
+        
+        JOptionPane.showMessageDialog(null, "Ta opcja jest nie aktywna");
+        
     }
     
     //-------------------------------------------------------------------------- funkcja losująca punkt wstawiania

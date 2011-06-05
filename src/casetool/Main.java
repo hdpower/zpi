@@ -95,7 +95,7 @@ class MainWindow extends JFrame {
         content.add(zakladki);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(this.szerokoscEkranu, this.wysokoscEkranu);
-        setResizable(false);
+//        setResizable(false);
         setTitle("CaseTool 1.0");
     
         // jeżeli wykryte zostanie zdarzenie przełączenia zkładki to
@@ -493,7 +493,6 @@ public void createCaseDiagram(String title, org.w3c.dom.Element XMLroot)
         JMenuItem mA = new JMenuItem("Aktor");
         JMenuItem mB = new JMenuItem("Przypadek Użycia");
         JMenuItem mC = new JMenuItem("Związek Prosty");
-        JMenuItem mD = new JMenuItem("Związek Dziedziczenia");
         JMenuItem mE = new JMenuItem("Związek \"Include\"");
         JMenuItem mF = new JMenuItem("Związek \"Extend\"");
         JMenuItem mG = new JMenuItem("Obszar Podsystemu");
@@ -502,7 +501,6 @@ public void createCaseDiagram(String title, org.w3c.dom.Element XMLroot)
         mA.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_1, java.awt.event.InputEvent.CTRL_MASK));
         mB.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_2, java.awt.event.InputEvent.CTRL_MASK));
         mC.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_3, java.awt.event.InputEvent.CTRL_MASK));
-        mD.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_4, java.awt.event.InputEvent.CTRL_MASK));
         mE.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_5, java.awt.event.InputEvent.CTRL_MASK));
         mF.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_6, java.awt.event.InputEvent.CTRL_MASK));
         mG.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_7, java.awt.event.InputEvent.CTRL_MASK));
@@ -521,6 +519,7 @@ public void createCaseDiagram(String title, org.w3c.dom.Element XMLroot)
 
             public void actionPerformed(ActionEvent e) {
 //                JOptionPane.showMessageDialog(null, "testMenu", "testMenu 2", JOptionPane.ERROR_MESSAGE);
+                System.out.println("jest ok");
                 ((CaseDiagram)tempCanvas.currentDiagram).addUseCaseElement(CaseDiagram.CaseDiagramTypes.USECASE);
             }
             
@@ -534,16 +533,7 @@ public void createCaseDiagram(String title, org.w3c.dom.Element XMLroot)
             }
             
         });
-        
-        mD.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-//                JOptionPane.showMessageDialog(null, "testMenu", "testMenu 4", JOptionPane.ERROR_MESSAGE);
-                ((CaseDiagram)tempCanvas.currentDiagram).addLink(CaseDiagram.CaseDiagramTypes.INHERITLINK);
-            }
-            
-        });
-        
+                
         mE.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -575,7 +565,6 @@ public void createCaseDiagram(String title, org.w3c.dom.Element XMLroot)
         menuElementy.add(mA);
         menuElementy.add(mB);
         menuElementy.add(mC);
-        menuElementy.add(mD);
         menuElementy.add(mE);
         menuElementy.add(mF);
     }

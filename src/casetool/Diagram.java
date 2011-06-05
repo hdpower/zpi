@@ -70,7 +70,7 @@ public abstract class Diagram {
 
     public String toXML()
     {
-    return "<diagram type='"+getType()+"'></diagram>";
+        return "<diagram type='"+getType()+"'></diagram>";
     }
 }
 

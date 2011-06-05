@@ -31,20 +31,19 @@ public class LinkPoint extends Element {
     Point buffP = new Point();
     
     Link line;
+    SystemBox systembox;
+    boolean lin;
     boolean from;
     boolean lock;
     JMenu menu;
     
     //-------------------------------------------------------------------------- konstruktor główny
     public LinkPoint(Point p) {
-        
-        System.out.println(" -> Nowy LinkPoint");
+
         this.x = p.x + 10;
         this.y = p.y + 10;
-        
-    }
 
-    public void changeDisplayMode() { }
+    }
 
     //-------------------------------------------------------------------------- rysuj element
     @Override
@@ -60,8 +59,21 @@ public class LinkPoint extends Element {
             r = new Rectangle(2+x,2+y,4,4);
             ga.draw(r);
         } 
-        
-        System.out.println(" -> Rysuj LinkPoint");
+               
+    }
+    
+    //-------------------------------------------------------------------------- podłącz link
+    public void setLink(Link l) {
+
+        line = l;
+        lin = true;
+
+    }
+    
+    public void setBox(SystemBox s) {
+
+        systembox = s;
+        lin = false;
         
     }
     
@@ -99,50 +111,52 @@ public class LinkPoint extends Element {
         
     }
     
-    //-------------------------------------------------------------------------- nie wiem co to jest <<==========================================
+    //-------------------------------------------------------------------------- nie wiem co to jest 
     @Override
     public void setPosition(Vector<Element> tables, int index, int canvasWidth, int canvasHeight) {
         
-
-//        
-//        int criticalX = canvasWidth;
-//        if(autoLocated) {
-//            for(int i=index-1; i>=0; i--) {
-//                if(tables.get(i).isAutoLocated()) {
-//                    
-//                    criticalX=tables.get(i).getX()+tables.get(i).getWidth()+margin;
-//                    if((canvasWidth-criticalX)>=getWidth()) {
-//                        x=criticalX;
-//                        y=tables.get(i).getY();
-//                    } else {
-//                        x=margin;
-//                        y=tables.get(i).getY()+tables.get(i).getHeight();
-//                    }
-//                    break;
-//                }
-//            }
-//        }
     }
 
     //-------------------------------------------------------------------------- modyfikuj element
     @Override
     public void modifyElement(Diagram diagram, Element element) {
-        
+        JOptionPane.showMessageDialog(null, "Tego elementu nie da sie edytować");
     }
 
     //-------------------------------------------------------------------------- usuń element
     @Override
     public void deleteElement(Diagram diagram, Element element) {
+        
         CaseDiagram diagramT=(CaseDiagram)diagram;
         
         // usuń linie i drugi punkt
         
-        diagramT.elements.remove(((LinkPoint)element).line.from);
-                
-        diagramT.elements.remove(((LinkPoint)element).line.to);
-        diagramT.elements.remove(((LinkPoint)element).line);
+        System.out.println("usuwam pingt Start");
         
-        //diagramT.elements.remove((UseCaseElement)element);
+        if(lin) {
+            diagramT.elements.remove(((LinkPoint)element).line.from);
+            diagramT.elements.remove(((LinkPoint)element).line.to);
+            diagramT.elements.remove(((LinkPoint)element).line);
+        } else {
+            diagramT.elements.remove(((LinkPoint)element).systembox.from);
+            diagramT.elements.remove(((LinkPoint)element).systembox.to);
+            diagramT.elements.remove(((LinkPoint)element).systembox);
+        }
+        
+        diagramT.elements.indexOf(x);
+        
+    }
+    
+    public void setAutolocated() {                
+        
+        JOptionPane.showMessageDialog(null, "Ta opcja jest nie aktywna");
+        
+    }
+    
+    public void changeDisplayMode() {
+        
+        JOptionPane.showMessageDialog(null, "Ta opcja jest nie aktywna");
+        
     }
     
     //-------------------------------------------------------------------------- do String

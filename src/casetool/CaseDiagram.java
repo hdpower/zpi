@@ -7,6 +7,8 @@ import casetool.usecase.InheritLink;
 import casetool.usecase.Link;
 import casetool.usecase.LinkPoint;
 import casetool.usecase.SimpleLink;
+import casetool.usecase.SystemBox;
+import casetool.usecase.UseCase;
 import java.awt.Container;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -64,7 +66,6 @@ public class CaseDiagram extends Diagram {
         elementsTree.add(new DefaultMutableTreeNode("Aktor"));
         elementsTree.add(new DefaultMutableTreeNode("Przypadek Użycia"));
         elementsTree.add(new DefaultMutableTreeNode("Związek Prosty"));
-        elementsTree.add(new DefaultMutableTreeNode("Związek Dziedziczenia"));
         elementsTree.add(new DefaultMutableTreeNode("Związek \"Include\""));
         elementsTree.add(new DefaultMutableTreeNode("Związek \"Extend\""));        
         elementsTree.add(new DefaultMutableTreeNode("Obszar Podsystemu"));
@@ -121,21 +122,6 @@ public class CaseDiagram extends Diagram {
             addTable.addActionListener(addTableClick);
             contextMenu.add(addTable);
             
-        } if(selectedNode.toString().equals("Związek Dziedziczenia")) {
-            // jeżeli chcemy dodać Aktora
-            
-            JMenuItem addTable = new JMenuItem("Dodaj Związek Dziedziczenia");
-            ActionListener addTableClick = new ActionListener() {
-                
-                public void actionPerformed(ActionEvent e)
-                {
-                    addLink(CaseDiagramTypes.INHERITLINK);
-                }
-            };
-            addTable.addActionListener(addTableClick);
-            contextMenu.add(addTable);
-            
-
         } if(selectedNode.toString().equals("Związek \"Include\"")) {
             // jeżeli chcemy dodać Aktora
             
@@ -198,6 +184,10 @@ public class CaseDiagram extends Diagram {
         }
         
         do {
+            
+            wynA = " ";
+            wynB = " ";
+            
             // pobierz nazwę wstawianego aktora
             buff = JOptionPane.showInputDialog(req);
 
@@ -234,11 +224,13 @@ public class CaseDiagram extends Diagram {
         } while(buff == null || buff.length() == 0);        
         
         // stwórz obiekt i wstaw
-        if(buff != null) {
+        if(buff != null && type == CaseDiagramTypes.ACTOR) {
             elements.add(new Actor(randomPoint(), wynA, wynB));
+        } else if(buff != null) {
+            elements.add(new UseCase(randomPoint(), wynA, wynB));
         }
                 
-        mw.tempCanvas.repaint();
+        //mw.tempCanvas.repaint();
     }
     
     //-------------------------------------------------------------------------- dodaj nowy Link(prosty,inherit,include,extend)
@@ -282,6 +274,19 @@ public class CaseDiagram extends Diagram {
         
 //        JOptionPane.showMessageDialog(null, "testMenu C", "testMenu C", JOptionPane.ERROR_MESSAGE);
         
+        String buffstr = JOptionPane.showInputDialog("Podaj nazwe Obszaru Podsystemu");
+        
+        Point buff = randomPoint();
+                
+        LinkPoint from = new LinkPoint(buff);
+        LinkPoint to = new LinkPoint(new Point(randomPoint().x + buff.x,randomPoint().y + buff.y));
+        elements.add(from);
+        elements.add(to);
+        
+        
+        
+        elements.add(new SystemBox(from, to,buffstr)); 
+        
         mw.tempCanvas.repaint();
     }
     
@@ -309,7 +314,7 @@ public class CaseDiagram extends Diagram {
     
         // status: 
         
-        
+        JOptionPane.showMessageDialog(null, "Sdfdsf");
         
     }
     
