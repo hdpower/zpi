@@ -37,6 +37,7 @@ public class procedurePropertis extends JDialog{
     private JPanel MainPanel;
     private JPanel ParamPanel;
     private JTable ParamTable;
+   private DBDiagram dbdiagram;
     private DefaultTableModel tablemodel;
     private JScrollPane scrolpane;
     private JComboBox typesList;
@@ -48,12 +49,13 @@ public class procedurePropertis extends JDialog{
     private int licznik=0;
     String readParams="";  
 
-    public procedurePropertis() {
+    public procedurePropertis(DBDiagram value) {
         
         content = getContentPane();
         setSize(500,650);
-        setTitle("Nowa Funkcja");
-         setVisible(true);
+        setTitle("Nowa Procedura");
+        setVisible(true);
+        dbdiagram = value;
         typesList = new JComboBox(typesTab);
         InOutList = new JComboBox(InOutTab); 
         t=new Tab();
@@ -64,9 +66,9 @@ public class procedurePropertis extends JDialog{
     public void ShowPanel()
     {
         MainPanel = new JPanel(new GridBagLayout());
-        JTextField proc_name = new JTextField();
+        final   JTextField proc_name = new JTextField();
         
-        JLabel params_label = new JLabel("( )");
+        final JLabel paramLabel = new JLabel("( )");
         
         final   JTextArea proc_body = new JTextArea();
                          
@@ -80,35 +82,50 @@ public class procedurePropertis extends JDialog{
                             textScroll_declare.setViewportView(declare_body);
                             textScroll_declare.setPreferredSize(new Dimension(460,100));
         
+                 JButton addProc = new JButton("Dodaj procedure");
+                         addProc.setSize(100,30);
+                         addProc.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                if(!proc_name.getText().isEmpty())
+                {
+                    dbdiagram.addChildToNode(proc_name.getText(), 2);
+                    setVisible(false);
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(content, "Procedura musi mieć nazwę!");
+                }
+            }
+        });
+                            
         GridBagConstraints c = new GridBagConstraints();                        //do rozmieszczania w gridbag potrzebne
         c.fill = GridBagConstraints.HORIZONTAL;
         
         MainPanel.setSize(new Dimension(500, 600));
         
         c.gridx=0;c.gridy=0;c.insets = new Insets(10,0,0,0);
-        MainPanel.add(new JLabel("CREATE OR "),c);
-        c.gridx=1;c.gridy=0;c.insets = new Insets(10,0,0,0);
-        MainPanel.add(new JLabel("REPLACE PROCEDURE "),c);
-        c.gridx=0;c.gridy=1;c.insets = new Insets(10,0,0,0);
+        MainPanel.add(new JLabel("Podaj nazwę procedury "),c);
+        c.gridx=1;c.gridy=0;c.insets = new Insets(10,0,0,0);c.gridwidth=3;
         MainPanel.add(proc_name,c);
-        c.gridx=1;c.gridy=1;
+        c.gridx=0;c.gridy=1;
         MainPanel.add(new JLabel("Parametry: "),c);
-        c.gridx=2;c.gridy=1;
-        MainPanel.add(params_label,c);
-        c.gridx=3;c.gridy=1;
-        MainPanel.add(new JLabel("IS"),c);
+        c.gridx=1;c.gridy=1;
+        MainPanel.add(paramLabel,c);
         c.gridx=0;c.gridy=2;
+        MainPanel.add(new JLabel("IS"),c);
+        c.gridx=0;c.gridy=3;
         MainPanel.add(new JLabel("DECLARE"),c);
-        c.gridx=0;c.gridy=3;c.gridwidth=4;
-        MainPanel.add(declare_body,c);
-        c.gridx=0;c.gridy=4;
+        c.gridx=0;c.gridy=4;c.gridwidth=4;
+        MainPanel.add(textScroll_declare,c);
+        c.gridx=0;c.gridy=5;
         MainPanel.add(new JLabel("BEGIN"),c);
-        c.gridx=0;c.gridy=5;c.gridwidth=4;
-        MainPanel.add(proc_body,c);
-        c.gridx=0;c.gridy=6;
-        MainPanel.add(new JLabel("END"),c);
+        c.gridx=0;c.gridy=6;c.gridwidth=4;
+        MainPanel.add(textScroll_begin,c);
         c.gridx=0;c.gridy=7;
-        MainPanel.add(new JButton("akc"),c);
+        MainPanel.add(new JLabel("END"),c);
+        c.gridx=0;c.gridy=8;
+        MainPanel.add(addProc,c);
         t.addToMain(MainPanel);
         
 //------------------------------------------------------------------------------drugi panel        
@@ -158,14 +175,14 @@ public class procedurePropertis extends JDialog{
                            }
                            catch( NumberFormatException numex)
                            {
-                               errormsg+=" Rozmiar w wierszu "+(i+1) + " musi być liczbą!\n";
-                               //JOptionPane.showMessageDialog(ParamPanel, " Rozmiar w wierszu "+(i+1) + " musi być liczbą!\n");
+                               //errormsg+=" Rozmiar w wierszu "+(i+1) + " musi być liczbą!\n";
+                               JOptionPane.showMessageDialog(ParamPanel, " Rozmiar w wierszu "+(i+1) + " musi być liczbą!\n");
                            }                   
                 }
                 try
                 {
                     readParams="( "+readParams.substring( 0, readParams.length()-1)+" )";
-                   // paramLabel.setText("( Dodałeś: "+ tablemodel.getRowCount() + " )");
+                    paramLabel.setText("( Dodałeś: "+ tablemodel.getRowCount() + " )");
                 }
                 catch(StringIndexOutOfBoundsException strex)
                 {

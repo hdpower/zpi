@@ -23,7 +23,7 @@ public class DBDiagram extends Diagram
     public Vector<Element> tables=new Vector<Element>();
     DefaultMutableTreeNode tablesNode;
     DefaultMutableTreeNode functionsNode;
-    
+    DefaultMutableTreeNode proceduresNode;
 public DBDiagram getInstance()
 {
     return this;
@@ -38,7 +38,7 @@ public DBDiagram()
     DefaultMutableTreeNode viewsNode=new DefaultMutableTreeNode("Perspektywy");
     DefaultMutableTreeNode triggersNode=new DefaultMutableTreeNode("Wyzwalacze");
     functionsNode=new DefaultMutableTreeNode("Funkcje");
-    DefaultMutableTreeNode proceduresNode=new DefaultMutableTreeNode("Procedury");
+    proceduresNode=new DefaultMutableTreeNode("Procedury");
     DefaultMutableTreeNode usersNode=new DefaultMutableTreeNode("Użytkownicy");
 
     elementsTree.add(tablesNode);
@@ -141,7 +141,7 @@ public void setContextMenuOptions(DefaultMutableTreeNode selectedNode, JPopupMen
         addProcedure.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                     procedurePropertis pp = new procedurePropertis();
+                     procedurePropertis pp = new procedurePropertis(getInstance());
                      pp.ShowPanel();
                 }
             });
@@ -265,10 +265,30 @@ public String toXML()
     return XML;
 }   
 
-public void addChildToNode(String name)
+/** Metoda odpowiedzialna za dodawanie dzieci do JTree
+   
+ * <tabble>         
+ * <tr>Numery galezi:</tr>
+ *          <tr>1 - functionsNode</tr>
+ *          <tr>2 - proceduresNode</tr>
+ *          <tr>3 - viewsNode</tr>
+ *          <tr>4 - triggersNode</tr>
+ *          <tr>5 - usersNode</tr>
+ * </table>
+ * @param name - nazwa dziecka,  
+ * @param which - do ktorej galezi 
+ * 
+ 
+ */
+public void addChildToNode(String name,int which)
 {       
         DefaultMutableTreeNode temp = new DefaultMutableTreeNode(name);
-        functionsNode.add(temp);
+         
+        switch (which){
+            case 1 : functionsNode.add(temp);   break;
+            case 2 : proceduresNode.add(temp);  break;
+            default: break;    
+        }
 }
 
 

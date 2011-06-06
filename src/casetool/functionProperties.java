@@ -10,7 +10,6 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -112,7 +111,7 @@ public class functionProperties extends JDialog{
                                    "\n\u0009 BEGIN" +
                                    "\n\u0009\u0009 "+fun_body.getText().replace("\n", "\n\u0009\u0009")+
                                    "\n\u0009 END "+ fun_name.getText() +";");
-                   dbdiagram.addChildToNode(fun_name.getText());
+                   dbdiagram.addChildToNode(fun_name.getText(),1);
                    setVisible(false);
                }
                else
@@ -252,15 +251,12 @@ public class functionProperties extends JDialog{
         JPanel southP = new JPanel();
                southP.add(akcept); 
         //----------------------------------------------------------------------additional panels for layout end
-//        ParamPanel.add(centerP,BorderLayout.CENTER); 
-//        ParamPanel.add(southP,BorderLayout.SOUTH);
-//        ParamPanel.add(eastP,BorderLayout.EAST);
-//        ParamPanel.add(northP,BorderLayout.NORTH) ;
+
         t.addToSecendary(centerP, BorderLayout.CENTER);
         t.addToSecendary(southP,BorderLayout.SOUTH);
         t.addToSecendary(eastP,BorderLayout.EAST);
         t.addToSecendary(northP,BorderLayout.NORTH) ;
-                                                                                 //add to JTabbedPane tabs
+                                                                                //add to JTabbedPane tabs
         //tabs.addTab("Funkcja", MainPanel);
         //tabs.addTab("Parametry", ParamPanel);
         
