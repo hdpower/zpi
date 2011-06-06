@@ -3,7 +3,6 @@ package casetool.usecase;
 import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 
 /**
  *
@@ -33,6 +32,8 @@ public class InheritLink extends Link {
         ga.setStroke(new BasicStroke(stroke));
         
         ga.drawLine(from.getX()+4, from.getY()+4, to.getX()+4, to.getY()+4);
+        
+        // obliczanie kierunku
     }
 
 
