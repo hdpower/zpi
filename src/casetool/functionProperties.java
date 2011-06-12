@@ -14,6 +14,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import javax.net.ssl.SSLEngineResult.Status;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -35,23 +36,32 @@ import javax.swing.table.DefaultTableModel;
  */
 public class functionProperties extends JDialog{
     
-   private Container content;
-   private DBDiagram dbdiagram;
-   private JPanel MainPanel;
-   private JPanel ParamPanel;
-   private JTable ParamTable;
-   private DefaultTableModel tablemodel;
-   private JScrollPane scrolpane;
-   private JComboBox typesList;
-   private JComboBox InOutList;
+   public Container content;
+   public DBDiagram dbdiagram;
+   public JPanel MainPanel;
+   public JPanel ParamPanel;
+   public JTable ParamTable;
+   public DefaultTableModel tablemodel;
+   public JScrollPane scrolpane;
+   public JComboBox typesList;
+   public JComboBox InOutList;
    private String[] typesTab={"INT","DOUBLE","VARCHAR","VARCHAR2","CHAR","DATE","TIMESTAMP"};
    private String[] InOutTab={"In","Out","In Out"};
-   private JTabbedPane tabs;
-   private HashMap<String,String> rdyFun;
-   private Tab t;
-   private int licznik=0;
-   String readParams="";                                                        // w tej zmiennej beda paramtetry w formie ostatecznej
-   
+   public JTabbedPane tabs;
+   public HashMap<String,String> rdyFun;
+   public Tab t;
+   /**
+    * Zmienna wykorzystywana do numerowania wierszy w tabelce parametrów
+    */
+   public int licznik=0;
+   /**
+    * Zmienna, do której będzie wpisana cała gotowa funkcja wykorzystywana do dodania value w hash mapie
+    */
+   public String readParams="";                                                      
+   /**
+    * pomocnicza zmienna do określenia czy poszło ok =0,nie=1;
+    */
+   public int status=0;
    
     public functionProperties(DBDiagram value)
     {
@@ -59,17 +69,32 @@ public class functionProperties extends JDialog{
         setTitle("Nowa Funkcja");
         setSize(500, 650);
         setVisible(true);
-        
+        dbdiagram = value;
+        initFun();
+    }
+    
+    private void initFun()
+    {
         typesList = new JComboBox(typesTab);
         InOutList = new JComboBox(InOutTab);
         rdyFun = new HashMap<String, String>();
-        dbdiagram = value;
         t = new Tab();
         tabs = t.addTabs("Fukcja","Parametry");
     }
-    public void showFun()
-    {
     
+    public void showFun(String funName)
+    {
+        
+        if(rdyFun.containsKey(funName))
+        {
+            System.out.println(rdyFun.get(funName));
+            status=0;
+        }
+        else
+        {
+            //JOptionPane.showMessageDialog(content, "Coś poszło nie tak");
+            status=1;
+        }
     }
     public void ShowPanel()
     {                                                   
@@ -112,11 +137,13 @@ public class functionProperties extends JDialog{
                                    "\n\u0009\u0009 "+fun_body.getText().replace("\n", "\n\u0009\u0009")+
                                    "\n\u0009 END "+ fun_name.getText() +";");
                    dbdiagram.addChildToNode(fun_name.getText(),1);
+                   status=0;
                    setVisible(false);
                }
                else
                {
-                   JOptionPane.showMessageDialog(MainPanel, "Funkcja musi mieć nazwę!");
+                   status=1;
+                   //JOptionPane.showMessageDialog(MainPanel, "Funkcja musi mieć nazwę!");
                }
             }
         });
@@ -150,7 +177,7 @@ public class functionProperties extends JDialog{
                                                                                 //MainPanel section end
         
                                                                                 //ParamPanel section
-        ParamPanel = new JPanel(new BorderLayout(20, 5));
+        //ParamPanel = new JPanel(new BorderLayout(20, 5));
         Object columnNames[] = {"", "Nazwa","Jak","Typ","Rozmiar"};
         tablemodel=new DefaultTableModel(columnNames, 0)
                 {
@@ -191,7 +218,8 @@ public class functionProperties extends JDialog{
                    }
                            catch( NullPointerException nullex)
                            {
-                               errorLabel.setText(errorLabel.getText()+"\n"+"Komórka: "+tablemodel.getValueAt(i, 0)+" jest pusta");
+                               errormsg+="\n"+"Komórka: "+tablemodel.getValueAt(i, 0)+" jest pusta ";
+                               //errorLabel.setText(errorLabel.getText()+"\n"+"Komórka: "+tablemodel.getValueAt(i, 0)+" jest pusta ");
                            }
                            catch( NumberFormatException numex)
                            {
@@ -210,7 +238,7 @@ public class functionProperties extends JDialog{
                 }
                 if(!"".equals(errormsg))
                 {
-                    JOptionPane.showMessageDialog(ParamPanel,errormsg);
+                    JOptionPane.showMessageDialog(MainPanel,errormsg);
                     errormsg="";
                 }
                 else
@@ -232,11 +260,17 @@ public class functionProperties extends JDialog{
         removerow.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-               int tmp =  ParamTable.getSelectedRow();
+                
+                if(ParamTable.getSelectedRow()!= -1)
+                {
+                int tmp =  ParamTable.getSelectedRow();
                 tablemodel.removeRow( ParamTable.getSelectedRow());
                 licznik--;
                 for(int i=tmp;i<licznik;i++)                                    //for to change numbers describing row 
                     tablemodel.setValueAt(i+1, i, 0);
+                }
+                else
+                    tablemodel.removeRow(licznik-1);licznik--;
             }
         });
         //----------------------------------------------------------------------JButtons end
