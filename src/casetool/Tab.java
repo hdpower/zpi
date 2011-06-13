@@ -13,8 +13,8 @@ import javax.swing.JTabbedPane;
  * @author ramyi
  */
 public class Tab extends JTabbedPane{
-    private JPanel MainPanel ;
-    private JPanel ParamPanel ;
+    protected JPanel MainPanel ;
+    protected JPanel ParamPanel ;
     
     Tab()
     {
