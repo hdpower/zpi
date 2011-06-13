@@ -33,7 +33,7 @@ public class CaseDiagram extends Diagram {
         ACTOR, USECASE, SIMPLELINK, INHERITLINK, EXTENDLINK, INCLUDELINK, SYSTEMBOX
     };
     
-    public ArrayList<Element> elements = new ArrayList<Element>();
+    public ArrayList<Element> elements;
     Plotno pl;
     MainWindow mw;
     Point frameLag;
@@ -56,6 +56,7 @@ public class CaseDiagram extends Diagram {
         // status: narzazie ok
         
         mw = pmw;
+        this.elements = new ArrayList<Element>();       
         
         // tworzenie menu w liście obiektów
         this.typ = "CaseUse";
@@ -228,7 +229,7 @@ public class CaseDiagram extends Diagram {
             elements.add(new UseCase(randomPoint(), wynA, wynB));
         }
                 
-        mw.tempCanvas.repaint();
+        //mw.tempCanvas.repaint();
     }
     
     //-------------------------------------------------------------------------- dodaj nowy Link(prosty,inherit,include,extend)
