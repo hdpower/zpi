@@ -75,11 +75,11 @@ public class CaseDiagramTest {
 
     }
     
-    //-------------------------------------------------------------------------- wstawianie elementów na diagram
+    //-------------------------------------------------------------------------- wstawianie aktora na diagram
     @Test
-    public void addElementTest() {
+    public void addActorTest() {
         
-        System.out.println(" -> Dodaj Element");
+        System.out.println(" -> Dodaj Aktora");
         
         // dodaj nowego Aktora
         cd.addUseCaseElement(CaseDiagramTypes.ACTOR);
@@ -90,24 +90,98 @@ public class CaseDiagramTest {
         // sprawdź kolor aktora
         assertEquals(cd.elements.get(0).color, new Color(0, 0, 0));
         
+        // sprawdź rozmiar czcionki
+        assertEquals(cd.elements.get(0).fontSize,10);
+
+        // sprawdź grubość lini
+        assertEquals(cd.elements.get(0).stroke,1);
+           
+        // sprawdź rozmiar czcionki
+        assertEquals(cd.elements.get(0).fontSize,10);
         
+        
+    }   
     
-    }    
+    //-------------------------------------------------------------------------- wstawienie linka extend na diagram
+    @Test
+    public void addExtendLink() {
+        
+        System.out.println(" -> Dodaj ExtendLink");
+        
+        // dodaj nowego ExtendLinka
+        cd.addLink(CaseDiagramTypes.EXTENDLINK);
+        
+        // sprawdź czy dodano poprawnie
+        assertEquals(cd.elements.toArray().length,3);
+        
+        // sprawdź kolor extendlinka
+        assertEquals(cd.elements.get(0).color, new Color(0, 0, 0));
+        
+        // sprawdź rozmiar czcionki
+        assertEquals(cd.elements.get(0).fontSize,10);
+
+        // sprawdź grubość lini
+        assertEquals(cd.elements.get(0).stroke,1);
+           
+        // sprawdź rozmiar czcionki
+        assertEquals(cd.elements.get(0).fontSize,10);
+        
+        
+    }
+    
+    //-------------------------------------------------------------------------- wstawienie linka extend na diagram
+    @Test
+    public void addSystemBox() {
+        
+        System.out.println(" -> Dodaj SystemBox");
+        
+        // dodaj nowego ExtendLinka
+        cd.addSystemBox();
+        
+        // sprawdź czy dodano poprawnie
+        assertEquals(cd.elements.toArray().length,3);
+        
+        // sprawdź kolor extendlinka
+        assertEquals(cd.elements.get(0).color, new Color(0, 0, 0));
+        
+        // sprawdź rozmiar czcionki
+        assertEquals(cd.elements.get(0).fontSize,10);
+
+        // sprawdź grubość lini
+        assertEquals(cd.elements.get(0).stroke,1);
+           
+        // sprawdź rozmiar czcionki
+        assertEquals(cd.elements.get(0).fontSize,10);
+        
+    }
+    
     
     @BeforeClass
     public static void setUpClass() throws Exception {
+       
+        //...
+        
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        
+        //...
+        
     }
     
     @Before
     public void setUp() {
+        
+        //...
+        
     }
     
     @After
     public void tearDown() {
+        
+        //...
+        
     }
     
   

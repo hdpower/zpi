@@ -263,7 +263,7 @@ public class CaseDiagram extends Diagram {
             break;
         }      
         
-        mw.tempCanvas.repaint();        
+//        mw.tempCanvas.repaint();        
     }
     
     //-------------------------------------------------------------------------- dodaj nowy Obszar Podsystemu
@@ -286,7 +286,7 @@ public class CaseDiagram extends Diagram {
         
         elements.add(new SystemBox(from, to,buffstr)); 
         
-        mw.tempCanvas.repaint();
+//        mw.tempCanvas.repaint();
     }
     
     //-------------------------------------------------------------------------- rysuje wszystkie elementy diagramu
